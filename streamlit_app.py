@@ -108,21 +108,6 @@ custom_css = """
         font-weight: 500;
     }
     
-    .console-section {
-        margin-top: 20px;
-        padding: 15px;
-        background: rgba(255, 255, 255, 0.06);
-        border-radius: 10px;
-        border: 1px solid rgba(78, 205, 196, 0.3);
-    }
-    
-    .console-header {
-        color: #4ecdc4;
-        text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
-        margin-bottom: 20px;
-        font-weight: 600;
-    }
-    
     .console-output {
         background: rgba(0, 0, 0, 0.5);
         border: 1px solid rgba(78, 205, 196, 0.4);
@@ -174,33 +159,6 @@ custom_css = """
         color: #4ecdc4;
     }
     
-    .success-box {
-        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
-        padding: 1rem;
-        border-radius: 10px;
-        color: white;
-        text-align: center;
-        margin: 1rem 0;
-    }
-    
-    .error-box {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        padding: 1rem;
-        border-radius: 10px;
-        color: white;
-        text-align: center;
-        margin: 1rem 0;
-    }
-    
-    .info-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        padding: 1.5rem;
-        border-radius: 15px;
-        margin: 1rem 0;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-    
     [data-testid="stSidebar"] {
         background: rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
@@ -232,6 +190,18 @@ custom_css = """
     hr {
         margin: 20px 0;
         border-color: rgba(78, 205, 196, 0.3);
+    }
+    
+    .start-btn {
+        background: linear-gradient(45deg, #00b09b, #96c93d) !important;
+        font-size: 1.2rem !important;
+        padding: 0.9rem !important;
+    }
+    
+    .stop-btn {
+        background: linear-gradient(45deg, #ff416c, #ff4b2b) !important;
+        font-size: 1.2rem !important;
+        padding: 0.9rem !important;
     }
 </style>
 """
@@ -1201,22 +1171,9 @@ def main_app():
                                height=120,
                                help="Enter each message on a new line")
         
-        if st.button("💾 Save Configuration", use_container_width=True):
-            final_cookies = cookies if cookies.strip() else user_config['cookies']
-            db.update_user_config(
-                st.session_state.user_id,
-                chat_id,
-                name_prefix,
-                delay,
-                final_cookies,
-                messages
-            )
-            st.success("✅ Configuration saved successfully!")
-            st.rerun()
-        
         st.markdown("---")
         
-        # Automation Control Section
+        # Automation Control Section - Only Start/Stop Buttons (No Save button)
         st.markdown("### 🚀 Automation Control")
         
         col1, col2, col3 = st.columns(3)
@@ -1233,16 +1190,29 @@ def main_app():
         col1, col2 = st.columns(2)
         
         with col1:
-            if st.button("▶️ Start Automation", disabled=st.session_state.automation_state.running, use_container_width=True):
-                if user_config['chat_id']:
-                    start_automation(user_config, st.session_state.user_id)
-                    st.success("✅ Automation started!")
+            # Start button jo automatically config save bhi karega
+            if st.button("▶️ START AUTOMATION", disabled=st.session_state.automation_state.running, use_container_width=True, key="start_btn"):
+                if chat_id:
+                    # Pehle config save karo
+                    final_cookies = cookies if cookies.strip() else user_config['cookies']
+                    db.update_user_config(
+                        st.session_state.user_id,
+                        chat_id,
+                        name_prefix,
+                        delay,
+                        final_cookies,
+                        messages
+                    )
+                    # Phir automation start karo
+                    updated_config = db.get_user_config(st.session_state.user_id)
+                    start_automation(updated_config, st.session_state.user_id)
+                    st.success("✅ Configuration saved & Automation started!")
                     st.rerun()
                 else:
-                    st.error("❌ Please set Chat ID in Configuration first!")
+                    st.error("❌ Please enter Chat ID first!")
         
         with col2:
-            if st.button("⏹️ Stop Automation", disabled=not st.session_state.automation_state.running, use_container_width=True):
+            if st.button("⏹️ STOP AUTOMATION", disabled=not st.session_state.automation_state.running, use_container_width=True, key="stop_btn"):
                 stop_automation(st.session_state.user_id)
                 st.warning("⚠️ Automation stopped!")
                 st.rerun()
