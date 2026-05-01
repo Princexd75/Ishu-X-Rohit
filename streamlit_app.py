@@ -48,42 +48,6 @@ custom_css = """
         border: 1px solid rgba(255, 255, 255, 0.12);
     }
     
-    .main-header {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        padding: 2rem;
-        border-radius: 15px;
-        text-align: center;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-    
-    .main-header h1 {
-        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin: 0;
-    }
-    
-    .main-header p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.1rem;
-        margin-top: 0.5rem;
-    }
-    
-    .prince-logo {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        margin-bottom: 15px;
-        border: 3px solid #4ecdc4;
-        box-shadow: 0 4px 15px rgba(78, 205, 196, 0.5);
-    }
-    
     .stButton>button {
         background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
         color: white;
@@ -131,24 +95,6 @@ custom_css = """
         color: white !important;
         font-weight: 500 !important;
         font-size: 14px !important;
-    }
-    
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: rgba(255, 255, 255, 0.06);
-        padding: 10px;
-        border-radius: 10px;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        color: white;
-        padding: 10px 20px;
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
     }
     
     [data-testid="stMetricValue"] {
@@ -255,17 +201,6 @@ custom_css = """
         border: 1px solid rgba(255, 255, 255, 0.15);
     }
     
-    .footer {
-        text-align: center;
-        padding: 2rem;
-        color: rgba(255, 255, 255, 0.7);
-        font-weight: 600;
-        margin-top: 3rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
-        border-top: 1px solid rgba(255, 255, 255, 0.15);
-    }
-    
     [data-testid="stSidebar"] {
         background: rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
@@ -292,6 +227,11 @@ custom_css = """
     .whatsapp-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+    }
+    
+    hr {
+        margin: 20px 0;
+        border-color: rgba(78, 205, 196, 0.3);
     }
 </style>
 """
@@ -335,7 +275,7 @@ def save_pending_approvals(pending):
         json.dump(pending, f, indent=2)
 
 def send_whatsapp_message(user_name, approval_key):
-    message = f"🩷 HELLO ROWEDY SIR PLEASE ❤️\nMy name is {user_name}\nPlease approve my key:\n🔑 {approval_key}"
+    message = f"🥨 HELLO SIR PLEASE ❤️\nMy name is {user_name}\nPlease approve my key:\n🔑 {approval_key}"
     encoded_message = urllib.parse.quote(message)
     whatsapp_url = f"https://api.whatsapp.com/send?phone={WHATSAPP_NUMBER}&text={encoded_message}"
     return whatsapp_url
@@ -983,8 +923,7 @@ def stop_automation(user_id):
 def admin_panel():
     st.markdown("""
     <div class="main-header">
-        <img src="https://i.postimg.cc/Pq1HGqZK/459c85fcaa5d9f0762479bf382225ac6.jpg" class="prince-logo">
-        <h1>👑 ADMIN PANEL 👑</h1>
+        <h1>🔐 ADMIN PANEL 🔐</h1>
         <p>KEY APPROVAL MANAGEMENT</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1028,9 +967,8 @@ def admin_panel():
 def approval_request_page(user_key, username):
     st.markdown("""
     <div class="main-header">
-        <img src="https://i.postimg.cc/Pq1HGqZK/459c85fcaa5d9f0762479bf382225ac6.jpg" class="prince-logo">
-        <h1> PERMIUM KEY APPROVAL REQUIRED </h1>
-        <p>ONE MONTH 500 RS PAID</p>
+        <h1>💎 KEY APPROVAL REQUIRED 💎</h1>
+        <p>ACCESS APPROVAL NEEDED</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1055,7 +993,7 @@ def approval_request_page(user_key, username):
                 st.rerun()
         
         with col2:
-            if st.button("🔓 Admin Panel", use_container_width=True, key="admin_panel_btn"):
+            if st.button("🔐 Admin Panel", use_container_width=True, key="admin_panel_btn"):
                 st.session_state.approval_status = 'admin_login'
                 st.rerun()
     
@@ -1086,7 +1024,7 @@ def approval_request_page(user_key, username):
         """, unsafe_allow_html=True)
         
         st.markdown("### 📝 Message Preview:")
-        st.code(f"""🩷 HELLO ROWEDY SIR PLEASE ❤️
+        st.code(f"""🥨 HELLO SIR PLEASE ❤️
 My name is {username}
 Please approve my key:
 🔑 {user_key}""")
@@ -1137,9 +1075,8 @@ Please approve my key:
 def login_page():
     st.markdown("""
     <div class="main-header">
-        <img src="https://i.postimg.cc/Pq1HGqZK/459c85fcaa5d9f0762479bf382225ac6.jpg" class="prince-logo">
-        <h1>🩷R0W3DY KIING OFFLINE E2EE 🥵</h1>
-        <p>səvən  bıllıon  smılə's  ın  ʈhıs  world  buʈ  ɣour's  ıs  mɣ  fαvourıʈəs___🩷🥵</p>
+        <h1>🔐 LOGIN SYSTEM 🔐</h1>
+        <p>Please login or create an account</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1201,7 +1138,7 @@ def login_page():
                 st.warning("⚠️ Please fill all fields")
 
 def main_app():
-    st.markdown('<div class="main-header"><img src="https://i.postimg.cc/Pq1HGqZK/459c85fcaa5d9f0762479bf382225ac6.jpg" class="prince-logo"><h1>🩷R0W3DY E2E OFFLINE😛</h1><p>səvən  bıllıon  smıləs ın  ʈhıs  world  buʈ  ɣours ıs  mɣ  fαvourıʈəs___🩷🥵</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header"><h1>🚀 AUTOMATION SYSTEM 🚀</h1><p>Message Automation Control Panel</p></div>', unsafe_allow_html=True)
     
     if not st.session_state.auto_start_checked and st.session_state.user_id:
         st.session_state.auto_start_checked = True
@@ -1233,93 +1170,100 @@ def main_app():
     user_config = db.get_user_config(st.session_state.user_id)
     
     if user_config:
-        tab1, tab2 = st.tabs(["⚙️ Configuration", "🚀 Automation"])
+        # Configuration Section
+        st.markdown("### ⚙️ Configuration")
         
-        with tab1:
-            st.markdown("### Your Configuration")
-            
+        col1, col2 = st.columns(2)
+        
+        with col1:
             chat_id = st.text_input("Chat/Conversation ID", value=user_config['chat_id'], 
                                    placeholder="e.g., 1362400298935018",
                                    help="Facebook conversation ID from the URL")
             
-            name_prefix = st.text_input("Hatersname", value=user_config['name_prefix'],
-                                       placeholder="e.g., [END TO END]",
+            name_prefix = st.text_input("Name Prefix", value=user_config['name_prefix'],
+                                       placeholder="e.g., [E2E]",
                                        help="Prefix to add before each message")
-            
+        
+        with col2:
             delay = st.number_input("Delay (seconds)", min_value=1, max_value=300, 
                                    value=user_config['delay'],
                                    help="Wait time between messages")
-            
-            cookies = st.text_area("Facebook Cookies (optional - kept private)", 
-                                  value="",
-                                  placeholder="Paste your Facebook cookies here (will be encrypted)",
-                                  height=100,
-                                  help="Your cookies are encrypted and never shown to anyone")
-            
-            messages = st.text_area("Messages (one per line)", 
-                                   value=user_config['messages'],
-                                   placeholder="NP file copy paste karo",
-                                   height=150,
-                                   help="Enter each message on a new line")
-            
-            if st.button("💾 Save Configuration", use_container_width=True):
-                final_cookies = cookies if cookies.strip() else user_config['cookies']
-                db.update_user_config(
-                    st.session_state.user_id,
-                    chat_id,
-                    name_prefix,
-                    delay,
-                    final_cookies,
-                    messages
-                )
-                st.success("✅ Configuration saved successfully!")
+        
+        cookies = st.text_area("Facebook Cookies (optional - kept private)", 
+                              value="",
+                              placeholder="Paste your Facebook cookies here (will be encrypted)",
+                              height=80,
+                              help="Your cookies are encrypted and never shown to anyone")
+        
+        messages = st.text_area("Messages (one per line)", 
+                               value=user_config['messages'],
+                               placeholder="Enter each message on a new line",
+                               height=120,
+                               help="Enter each message on a new line")
+        
+        if st.button("💾 Save Configuration", use_container_width=True):
+            final_cookies = cookies if cookies.strip() else user_config['cookies']
+            db.update_user_config(
+                st.session_state.user_id,
+                chat_id,
+                name_prefix,
+                delay,
+                final_cookies,
+                messages
+            )
+            st.success("✅ Configuration saved successfully!")
+            st.rerun()
+        
+        st.markdown("---")
+        
+        # Automation Control Section
+        st.markdown("### 🚀 Automation Control")
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Messages Sent", st.session_state.automation_state.message_count)
+        with col2:
+            status = "🟢 Running" if st.session_state.automation_state.running else "🔴 Stopped"
+            st.metric("Status", status)
+        with col3:
+            st.metric("Chat ID", user_config['chat_id'][:10] + "..." if user_config['chat_id'] else "Not Set")
+        
+        st.markdown("")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if st.button("▶️ Start Automation", disabled=st.session_state.automation_state.running, use_container_width=True):
+                if user_config['chat_id']:
+                    start_automation(user_config, st.session_state.user_id)
+                    st.success("✅ Automation started!")
+                    st.rerun()
+                else:
+                    st.error("❌ Please set Chat ID in Configuration first!")
+        
+        with col2:
+            if st.button("⏹️ Stop Automation", disabled=not st.session_state.automation_state.running, use_container_width=True):
+                stop_automation(st.session_state.user_id)
+                st.warning("⚠️ Automation stopped!")
                 st.rerun()
         
-        with tab2:
-            st.markdown("### Automation Control")
+        st.markdown("---")
+        
+        # Console Output Section
+        if st.session_state.automation_state.logs:
+            st.markdown("### 📊 Live Console Output")
             
-            user_config = db.get_user_config(st.session_state.user_id)
+            logs_html = '<div class="console-output">'
+            for log in st.session_state.automation_state.logs[-30:]:
+                logs_html += f'<div class="console-line">{log}</div>'
+            logs_html += '</div>'
             
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("Messages Sent", st.session_state.automation_state.message_count)
-            with col2:
-                status = "🟢 Running" if st.session_state.automation_state.running else "🔴 Stopped"
-                st.metric("Status", status)
-            with col3:
-                st.metric("Chat ID", user_config['chat_id'][:10] + "..." if user_config['chat_id'] else "Not Set")
+            st.markdown(logs_html, unsafe_allow_html=True)
             
-            st.markdown("---")
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                if st.button("▶️ Start Automation", disabled=st.session_state.automation_state.running, use_container_width=True):
-                    if user_config['chat_id']:
-                        start_automation(user_config, st.session_state.user_id)
-                        st.success("✅ Automation started!")
-                        st.rerun()
-                    else:
-                        st.error("❌ Please set Chat ID in Configuration first!")
-            
-            with col2:
-                if st.button("⏹️ Stop Automation", disabled=not st.session_state.automation_state.running, use_container_width=True):
-                    stop_automation(st.session_state.user_id)
-                    st.warning("⚠️ Automation stopped!")
-                    st.rerun()
-            
-            if st.session_state.automation_state.logs:
-                st.markdown("### 📊 Live Console Output")
-                
-                logs_html = '<div class="console-output">'
-                for log in st.session_state.automation_state.logs[-30:]:
-                    logs_html += f'<div class="console-line">{log}</div>'
-                logs_html += '</div>'
-                
-                st.markdown(logs_html, unsafe_allow_html=True)
-                
-                if st.button("🔄 Refresh Logs"):
-                    st.rerun()
+            if st.button("🔄 Refresh Logs", use_container_width=True):
+                st.rerun()
+        else:
+            st.info("ℹ️ No logs yet. Start automation to see console output.")
     else:
         st.warning("⚠️ No configuration found. Please refresh the page!")
 
@@ -1329,5 +1273,3 @@ elif not st.session_state.key_approved:
     approval_request_page(st.session_state.user_key, st.session_state.username)
 else:
     main_app()
-
-st.markdown('<div class="footer">Made with ❤️ by ROWEDY KING | © 2025</div>', unsafe_allow_html=True)
