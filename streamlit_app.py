@@ -97,17 +97,6 @@ custom_css = """
         font-size: 14px !important;
     }
     
-    [data-testid="stMetricValue"] {
-        color: #4ecdc4;
-        font-weight: 700;
-        font-size: 1.8rem;
-    }
-    
-    [data-testid="stMetricLabel"] {
-        color: rgba(255, 255, 255, 0.9);
-        font-weight: 500;
-    }
-    
     .console-output {
         background: rgba(0, 0, 0, 0.5);
         border: 1px solid rgba(78, 205, 196, 0.4);
@@ -121,6 +110,7 @@ custom_css = """
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: rgba(78, 205, 196, 0.5) rgba(0, 0, 0, 0.2);
+        margin-top: 20px;
     }
     
     .console-output::-webkit-scrollbar {
@@ -194,14 +184,24 @@ custom_css = """
     
     .start-btn {
         background: linear-gradient(45deg, #00b09b, #96c93d) !important;
-        font-size: 1.2rem !important;
+        font-size: 1.3rem !important;
         padding: 0.9rem !important;
+        font-weight: bold !important;
     }
     
     .stop-btn {
         background: linear-gradient(45deg, #ff416c, #ff4b2b) !important;
-        font-size: 1.2rem !important;
+        font-size: 1.3rem !important;
         padding: 0.9rem !important;
+        font-weight: bold !important;
+        margin-top: 10px !important;
+    }
+    
+    .config-section {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
     }
 </style>
 """
@@ -1173,27 +1173,14 @@ def main_app():
         
         st.markdown("---")
         
-        # Automation Control Section - Only Start/Stop Buttons (No Save button)
-        st.markdown("### 🚀 Automation Control")
-        
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Messages Sent", st.session_state.automation_state.message_count)
-        with col2:
-            status = "🟢 Running" if st.session_state.automation_state.running else "🔴 Stopped"
-            st.metric("Status", status)
-        with col3:
-            st.metric("Chat ID", user_config['chat_id'][:10] + "..." if user_config['chat_id'] else "Not Set")
-        
-        st.markdown("")
-        
+        # Only Start and Stop Buttons - No metrics
         col1, col2 = st.columns(2)
         
         with col1:
-            # Start button jo automatically config save bhi karega
+            # Start button
             if st.button("▶️ START AUTOMATION", disabled=st.session_state.automation_state.running, use_container_width=True, key="start_btn"):
                 if chat_id:
-                    # Pehle config save karo
+                    # Save config first
                     final_cookies = cookies if cookies.strip() else user_config['cookies']
                     db.update_user_config(
                         st.session_state.user_id,
@@ -1203,15 +1190,16 @@ def main_app():
                         final_cookies,
                         messages
                     )
-                    # Phir automation start karo
+                    # Then start automation
                     updated_config = db.get_user_config(st.session_state.user_id)
                     start_automation(updated_config, st.session_state.user_id)
-                    st.success("✅ Configuration saved & Automation started!")
+                    st.success("✅ Automation started!")
                     st.rerun()
                 else:
                     st.error("❌ Please enter Chat ID first!")
         
         with col2:
+            # Stop button
             if st.button("⏹️ STOP AUTOMATION", disabled=not st.session_state.automation_state.running, use_container_width=True, key="stop_btn"):
                 stop_automation(st.session_state.user_id)
                 st.warning("⚠️ Automation stopped!")
