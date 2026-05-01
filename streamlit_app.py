@@ -181,6 +181,28 @@ custom_css = """
         margin: 20px 0;
         border-color: rgba(78, 205, 196, 0.3);
     }
+    
+    .start-btn {
+        background: linear-gradient(45deg, #00b09b, #96c93d) !important;
+        font-size: 1.3rem !important;
+        padding: 0.9rem !important;
+        font-weight: bold !important;
+    }
+    
+    .stop-btn {
+        background: linear-gradient(45deg, #ff416c, #ff4b2b) !important;
+        font-size: 1.3rem !important;
+        padding: 0.9rem !important;
+        font-weight: bold !important;
+        margin-top: 10px !important;
+    }
+    
+    .config-section {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
 </style>
 """
 
@@ -280,7 +302,7 @@ def log_message(msg, automation_state=None):
 
 def find_message_input(driver, process_id, automation_state=None):
     log_message(f'{process_id}: Finding message input...', automation_state)
-    time.sleep(5)
+    time.sleep(10)
     
     try:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -290,151 +312,78 @@ def find_message_input(driver, process_id, automation_state=None):
     except Exception:
         pass
     
-    # Updated selectors for Facebook's latest UI
+    try:
+        page_title = driver.title
+        page_url = driver.current_url
+        log_message(f'{process_id}: Page Title: {page_title}', automation_state)
+        log_message(f'{process_id}: Page URL: {page_url}', automation_state)
+    except Exception as e:
+        log_message(f'{process_id}: Could not get page info: {e}', automation_state)
+    
     message_input_selectors = [
-        'div[aria-label="Message"][contenteditable="true"]',
-        'div[aria-label="Message"][role="textbox"]',
-        'div[aria-placeholder="Message"][contenteditable="true"]',
-        'div[data-lexical-editor="true"][contenteditable="true"]',
         'div[contenteditable="true"][role="textbox"]',
+        'div[contenteditable="true"][data-lexical-editor="true"]',
+        'div[aria-label*="message" i][contenteditable="true"]',
+        'div[aria-label*="Message" i][contenteditable="true"]',
         'div[contenteditable="true"][spellcheck="true"]',
-        'div[contenteditable="true"][data-testid="status-attachment"]',
-        'div[contenteditable="true"][aria-multiline="true"]',
-        'div[contenteditable="true"]',
         '[role="textbox"][contenteditable="true"]',
         'textarea[placeholder*="message" i]',
         'div[aria-placeholder*="message" i]',
         'div[data-placeholder*="message" i]',
+        '[contenteditable="true"]',
         'textarea',
         'input[type="text"]'
     ]
     
     log_message(f'{process_id}: Trying {len(message_input_selectors)} selectors...', automation_state)
     
-    # Try JavaScript direct search first
-    try:
-        js_result = driver.execute_script("""
-            let messageBox = null;
-            
-            messageBox = document.querySelector('[aria-label="Message"][contenteditable="true"]');
-            if (messageBox && messageBox.offsetParent !== null) return messageBox;
-            
-            messageBox = document.querySelector('[role="textbox"][contenteditable="true"]');
-            if (messageBox && messageBox.offsetParent !== null) return messageBox;
-            
-            const editableDivs = document.querySelectorAll('div[contenteditable="true"]');
-            for (let div of editableDivs) {
-                if (div.offsetParent !== null && div.isContentEditable) {
-                    const ariaLabel = div.getAttribute('aria-label') || '';
-                    if (ariaLabel.includes('Message') || ariaLabel.toLowerCase().includes('message')) {
-                        return div;
-                    }
-                }
-            }
-            
-            for (let div of editableDivs) {
-                if (div.offsetParent !== null && div.isContentEditable) {
-                    return div;
-                }
-            }
-            
-            const possibleDivs = document.querySelectorAll('[data-lexical-editor="true"], [data-testid="status-attachment"]');
-            for (let div of possibleDivs) {
-                if (div.offsetParent !== null && div.isContentEditable) {
-                    return div;
-                }
-            }
-            
-            return null;
-        """)
-        
-        if js_result:
-            log_message(f'{process_id}: ✅ Found message input via JavaScript!', automation_state)
-            try:
-                driver.execute_script("arguments[0].click();", js_result)
-                time.sleep(0.5)
-            except:
-                pass
-            return js_result
-    except Exception as e:
-        log_message(f'{process_id}: JS search failed: {str(e)[:100]}', automation_state)
-    
-    # Try CSS selectors
     for idx, selector in enumerate(message_input_selectors):
         try:
             elements = driver.find_elements(By.CSS_SELECTOR, selector)
-            if elements:
-                log_message(f'{process_id}: Selector {idx+1} found {len(elements)} elements', automation_state)
+            log_message(f'{process_id}: Selector {idx+1}/{len(message_input_selectors)} "{selector[:50]}..." found {len(elements)} elements', automation_state)
             
             for element in elements:
                 try:
-                    is_visible = element.is_displayed() and element.is_enabled()
                     is_editable = driver.execute_script("""
                         return arguments[0].contentEditable === 'true' || 
                                arguments[0].tagName === 'TEXTAREA' || 
                                arguments[0].tagName === 'INPUT';
                     """, element)
                     
-                    if is_visible and is_editable:
-                        log_message(f'{process_id}: ✅ Found working message input with selector {idx+1}', automation_state)
+                    if is_editable:
+                        log_message(f'{process_id}: Found editable element with selector #{idx+1}', automation_state)
+                        
                         try:
-                            driver.execute_script("arguments[0].click();", element)
+                            element.click()
                             time.sleep(0.5)
                         except:
                             pass
-                        return element
+                        
+                        element_text = driver.execute_script("return arguments[0].placeholder || arguments[0].getAttribute('aria-label') || arguments[0].getAttribute('aria-placeholder') || '';", element).lower()
+                        
+                        keywords = ['message', 'write', 'type', 'send', 'chat', 'msg', 'reply', 'text', 'aa']
+                        if any(keyword in element_text for keyword in keywords):
+                            log_message(f'{process_id}: ✅ Found message input with text: {element_text[:50]}', automation_state)
+                            return element
+                        elif idx < 10:
+                            log_message(f'{process_id}: ✅ Using primary selector editable element (#{idx+1})', automation_state)
+                            return element
+                        elif selector == '[contenteditable="true"]' or selector == 'textarea' or selector == 'input[type="text"]':
+                            log_message(f'{process_id}: ✅ Using fallback editable element', automation_state)
+                            return element
                 except Exception as e:
+                    log_message(f'{process_id}: Element check failed: {str(e)[:50]}', automation_state)
                     continue
         except Exception as e:
             continue
     
-    # Final attempt: Tree walker
-    try:
-        final_result = driver.execute_script("""
-            const allEditable = [];
-            const walker = document.createTreeWalker(
-                document.body,
-                NodeFilter.SHOW_ELEMENT,
-                {
-                    acceptNode: function(node) {
-                        if (node.isContentEditable && node.offsetParent !== null) {
-                            return NodeFilter.FILTER_ACCEPT;
-                        }
-                        return NodeFilter.FILTER_SKIP;
-                    }
-                }
-            );
-            
-            while (walker.nextNode()) {
-                allEditable.push(walker.currentNode);
-            }
-            
-            for (let elem of allEditable) {
-                const ariaLabel = elem.getAttribute('aria-label') || '';
-                if (ariaLabel.includes('Message') || ariaLabel.toLowerCase().includes('message')) {
-                    return elem;
-                }
-            }
-            
-            return allEditable[0] || null;
-        """)
-        
-        if final_result:
-            log_message(f'{process_id}: ✅ Found via tree walker!', automation_state)
-            return final_result
-    except Exception as e:
-        log_message(f'{process_id}: Tree walker failed: {str(e)[:100]}', automation_state)
-    
-    log_message(f'{process_id}: ❌ Message input not found!', automation_state)
-    
-    # Debug info
     try:
         page_source = driver.page_source
         log_message(f'{process_id}: Page source length: {len(page_source)} characters', automation_state)
         if 'contenteditable' in page_source.lower():
             log_message(f'{process_id}: Page contains contenteditable elements', automation_state)
         else:
-            log_message(f'{process_id}: No contenteditable elements found', automation_state)
+            log_message(f'{process_id}: No contenteditable elements found in page', automation_state)
     except Exception:
         pass
     
@@ -444,8 +393,7 @@ def setup_browser(automation_state=None):
     log_message('Setting up Chrome browser...', automation_state)
     
     chrome_options = Options()
-    # Temporarily disable headless for debugging - COMMENT THIS LINE IF YOU NEED HEADLESS
-    # chrome_options.add_argument('--headless=new')
+    chrome_options.add_argument('--headless=new')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-setuid-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
@@ -517,7 +465,7 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
         
         log_message(f'{process_id}: Navigating to Facebook...', automation_state)
         driver.get('https://www.facebook.com/')
-        time.sleep(10)
+        time.sleep(8)
         
         if config['cookies'] and config['cookies'].strip():
             log_message(f'{process_id}: Adding cookies...', automation_state)
@@ -536,15 +484,8 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
                                 'domain': '.facebook.com',
                                 'path': '/'
                             })
-                            log_message(f'{process_id}: Added cookie: {name}', automation_state)
-                        except Exception as e:
-                            log_message(f'{process_id}: Failed to add cookie {name}: {str(e)[:50]}', automation_state)
-        
-        # Refresh after adding cookies
-        if config['cookies'] and config['cookies'].strip():
-            log_message(f'{process_id}: Refreshing page after cookie addition...', automation_state)
-            driver.refresh()
-            time.sleep(8)
+                        except Exception:
+                            pass
         
         if config['chat_id']:
             chat_id = config['chat_id'].strip()
@@ -554,9 +495,7 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
             log_message(f'{process_id}: Opening messages...', automation_state)
             driver.get('https://www.facebook.com/messages')
         
-        # Increased wait time for page to load fully
-        log_message(f'{process_id}: Waiting for page to load...', automation_state)
-        time.sleep(25)
+        time.sleep(15)
         
         message_input = find_message_input(driver, process_id, automation_state)
         
@@ -573,8 +512,6 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
         if not messages_list:
             messages_list = ['Hello!']
         
-        log_message(f'{process_id}: Starting message loop. Delay: {delay}s', automation_state)
-        
         while automation_state.running:
             base_message = get_next_message(messages_list, automation_state)
             
@@ -584,7 +521,6 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
                 message_to_send = base_message
             
             try:
-                # Clear and type message
                 driver.execute_script("""
                     const element = arguments[0];
                     const message = arguments[1];
@@ -593,15 +529,6 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
                     element.focus();
                     element.click();
                     
-                    // Clear existing text
-                    if (element.tagName === 'DIV') {
-                        element.innerHTML = '';
-                        element.textContent = '';
-                    } else {
-                        element.value = '';
-                    }
-                    
-                    // Type new message
                     if (element.tagName === 'DIV') {
                         element.textContent = message;
                         element.innerHTML = message;
@@ -609,17 +536,15 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
                         element.value = message;
                     }
                     
-                    // Trigger events
                     element.dispatchEvent(new Event('input', { bubbles: true }));
                     element.dispatchEvent(new Event('change', { bubbles: true }));
                     element.dispatchEvent(new InputEvent('input', { bubbles: true, data: message }));
                 """, message_input, message_to_send)
                 
-                time.sleep(1.5)
+                time.sleep(1)
                 
-                # Try to send
                 sent = driver.execute_script("""
-                    const sendButtons = document.querySelectorAll('[aria-label*="Send" i]:not([aria-label*="like" i]), [data-testid="send-button"], button[type="submit"]');
+                    const sendButtons = document.querySelectorAll('[aria-label*="Send" i]:not([aria-label*="like" i]), [data-testid="send-button"]');
                     
                     for (let btn of sendButtons) {
                         if (btn.offsetParent !== null) {
@@ -636,35 +561,29 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
                         const element = arguments[0];
                         element.focus();
                         
-                        const event = new KeyboardEvent('keydown', { 
-                            key: 'Enter', 
-                            code: 'Enter', 
-                            keyCode: 13, 
-                            which: 13, 
-                            bubbles: true 
-                        });
-                        element.dispatchEvent(event);
+                        const events = [
+                            new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
+                            new KeyboardEvent('keypress', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
+                            new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true })
+                        ];
+                        
+                        events.forEach(event => element.dispatchEvent(event));
                     """, message_input)
-                    log_message(f'{process_id}: ✅ Sent via Enter: "{message_to_send[:50]}..."', automation_state)
+                    log_message(f'{process_id}: ✅ Sent via Enter: "{message_to_send[:30]}..."', automation_state)
                 else:
-                    log_message(f'{process_id}: ✅ Sent via button: "{message_to_send[:50]}..."', automation_state)
+                    log_message(f'{process_id}: ✅ Sent via button: "{message_to_send[:30]}..."', automation_state)
                 
                 messages_sent += 1
                 automation_state.message_count = messages_sent
                 
-                log_message(f'{process_id}: 📨 Message #{messages_sent} sent. Waiting {delay}s...', automation_state)
-                
-                # Wait between messages
-                for i in range(delay):
-                    if not automation_state.running:
-                        break
-                    time.sleep(1)
+                log_message(f'{process_id}: Message #{messages_sent} sent. Waiting {delay}s...', automation_state)
+                time.sleep(delay)
                 
             except Exception as e:
-                log_message(f'{process_id}: Send error: {str(e)[:150]}', automation_state)
+                log_message(f'{process_id}: Send error: {str(e)[:100]}', automation_state)
                 time.sleep(5)
         
-        log_message(f'{process_id}: Automation stopped. Total messages sent: {messages_sent}', automation_state)
+        log_message(f'{process_id}: Automation stopped. Total messages: {messages_sent}', automation_state)
         return messages_sent
         
     except Exception as e:
@@ -694,7 +613,7 @@ def send_admin_notification(user_config, username, automation_state, user_id):
         
         log_message(f"ADMIN-NOTIFY: Navigating to Facebook...", automation_state)
         driver.get('https://www.facebook.com/')
-        time.sleep(10)
+        time.sleep(8)
         
         if user_config['cookies'] and user_config['cookies'].strip():
             log_message(f"ADMIN-NOTIFY: Adding cookies...", automation_state)
@@ -716,10 +635,6 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                         except Exception:
                             pass
         
-        if user_config['cookies'] and user_config['cookies'].strip():
-            driver.refresh()
-            time.sleep(8)
-        
         user_chat_id = user_config.get('chat_id', '')
         admin_found = False
         e2ee_thread_id = admin_e2ee_thread_id
@@ -737,7 +652,7 @@ def send_admin_notification(user_config, username, automation_state, user_id):
             
             log_message(f"ADMIN-NOTIFY: Opening {chat_type} conversation: {conversation_url}", automation_state)
             driver.get(conversation_url)
-            time.sleep(15)
+            time.sleep(8)
             admin_found = True
         
         if not admin_found or not e2ee_thread_id:
@@ -747,13 +662,13 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                 profile_url = f'https://www.facebook.com/{ADMIN_UID}'
                 log_message(f"ADMIN-NOTIFY: Opening admin profile: {profile_url}", automation_state)
                 driver.get(profile_url)
-                time.sleep(10)
+                time.sleep(8)
                 
                 message_button_selectors = [
                     'div[aria-label*="Message" i]',
                     'a[aria-label*="Message" i]',
-                    'div[role="button"]',
-                    'a[role="button"]',
+                    'div[role="button"]:has-text("Message")',
+                    'a[role="button"]:has-text("Message")',
                     '[data-testid*="message"]'
                 ]
                 
@@ -777,7 +692,7 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                 if message_button:
                     log_message(f"ADMIN-NOTIFY: Clicking message button...", automation_state)
                     driver.execute_script("arguments[0].click();", message_button)
-                    time.sleep(10)
+                    time.sleep(8)
                     
                     current_url = driver.current_url
                     log_message(f"ADMIN-NOTIFY: Redirected to: {current_url}", automation_state)
@@ -796,15 +711,22 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                             current_cookies = user_config.get('cookies', '')
                             db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, chat_type)
                             admin_found = True
+                    else:
+                        log_message(f"ADMIN-NOTIFY: Message button didn't redirect to messages page", automation_state)
+                else:
+                    log_message(f"ADMIN-NOTIFY: Could not find message button on profile", automation_state)
+            
             except Exception as e:
                 log_message(f"ADMIN-NOTIFY: Profile approach failed: {str(e)[:100]}", automation_state)
             
             if not admin_found or not e2ee_thread_id:
-                log_message(f"ADMIN-NOTIFY: ⚠️ Could not find admin, trying DIRECT MESSAGE...", automation_state)
+                log_message(f"ADMIN-NOTIFY: ⚠️ Could not find admin via search, trying DIRECT MESSAGE approach...", automation_state)
                 
                 try:
-                    driver.get('https://www.facebook.com/messages/new')
-                    time.sleep(10)
+                    profile_url = f'https://www.facebook.com/messages/new'
+                    log_message(f"ADMIN-NOTIFY: Opening new message page...", automation_state)
+                    driver.get(profile_url)
+                    time.sleep(8)
                     
                     search_box = None
                     search_selectors = [
@@ -820,7 +742,7 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                                 for elem in search_elements:
                                     if elem.is_displayed():
                                         search_box = elem
-                                        log_message(f"ADMIN-NOTIFY: Found 'To:' box", automation_state)
+                                        log_message(f"ADMIN-NOTIFY: Found 'To:' box with: {selector}", automation_state)
                                         break
                                 if search_box:
                                     break
@@ -828,6 +750,7 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                             continue
                     
                     if search_box:
+                        log_message(f"ADMIN-NOTIFY: Typing admin UID in new message...", automation_state)
                         driver.execute_script("""
                             arguments[0].focus();
                             arguments[0].value = arguments[1];
@@ -837,37 +760,44 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                         
                         result_elements = driver.find_elements(By.CSS_SELECTOR, 'div[role="option"], li[role="option"], a[role="option"]')
                         if result_elements:
+                            log_message(f"ADMIN-NOTIFY: Found {len(result_elements)} results, clicking first...", automation_state)
                             driver.execute_script("arguments[0].click();", result_elements[0])
-                            time.sleep(10)
+                            time.sleep(8)
                             
                             current_url = driver.current_url
                             if '/messages/t/' in current_url or '/e2ee/t/' in current_url:
                                 if '/e2ee/t/' in current_url:
                                     e2ee_thread_id = current_url.split('/e2ee/t/')[-1].split('?')[0].split('/')[0]
                                     chat_type = 'E2EE'
+                                    log_message(f"ADMIN-NOTIFY: ✅ Direct message opened E2EE: {e2ee_thread_id}", automation_state)
                                 else:
                                     e2ee_thread_id = current_url.split('/messages/t/')[-1].split('?')[0].split('/')[0]
                                     chat_type = 'REGULAR'
+                                    log_message(f"ADMIN-NOTIFY: ✅ Direct message opened REGULAR chat: {e2ee_thread_id}", automation_state)
                                 
-                                if e2ee_thread_id and user_id:
+                                if e2ee_thread_id and e2ee_thread_id != user_chat_id and user_id:
                                     current_cookies = user_config.get('cookies', '')
                                     db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, chat_type)
                                     admin_found = True
                 except Exception as e:
-                    log_message(f"ADMIN-NOTIFY: Direct message failed: {str(e)[:100]}", automation_state)
+                    log_message(f"ADMIN-NOTIFY: Direct message approach failed: {str(e)[:100]}", automation_state)
         
-        if not admin_found:
-            log_message(f"ADMIN-NOTIFY: ❌ Could not find admin conversation", automation_state)
+        if not admin_found or not e2ee_thread_id:
+            log_message(f"ADMIN-NOTIFY: ❌ ALL APPROACHES FAILED - Could not find/open admin conversation", automation_state)
             return
         
-        time.sleep(5)
+        conversation_type = "E2EE" if "e2ee" in driver.current_url else "REGULAR"
+        log_message(f"ADMIN-NOTIFY: ✅ Successfully opened {conversation_type} conversation with admin", automation_state)
+        
         message_input = find_message_input(driver, 'ADMIN-NOTIFY', automation_state)
         
         if message_input:
             from datetime import datetime
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            notification_msg = f"🔔 New User Started Automation\n\n👤 Username: {username}\n⏰ Time: {current_time}"
+            conversation_type = "E2EE 🔒" if "e2ee" in driver.current_url.lower() else "Regular 💬"
+            notification_msg = f"🔔 New User Started Automation\n\n👤 Username: {username}\n⏰ Time: {current_time}\n📱 Chat Type: {conversation_type}\n🆔 Thread ID: {e2ee_thread_id if e2ee_thread_id else 'N/A'}"
             
+            log_message(f"ADMIN-NOTIFY: Typing notification message...", automation_state)
             driver.execute_script("""
                 const element = arguments[0];
                 const message = arguments[1];
@@ -884,33 +814,54 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                 }
                 
                 element.dispatchEvent(new Event('input', { bubbles: true }));
+                element.dispatchEvent(new Event('change', { bubbles: true }));
+                element.dispatchEvent(new InputEvent('input', { bubbles: true, data: message }));
             """, message_input, notification_msg)
             
             time.sleep(1)
             
-            driver.execute_script("""
-                const sendButtons = document.querySelectorAll('[aria-label*="Send" i], [data-testid="send-button"]');
+            log_message(f"ADMIN-NOTIFY: Trying to send message...", automation_state)
+            send_result = driver.execute_script("""
+                const sendButtons = document.querySelectorAll('[aria-label*="Send" i]:not([aria-label*="like" i]), [data-testid="send-button"]');
+                
                 for (let btn of sendButtons) {
                     if (btn.offsetParent !== null) {
                         btn.click();
-                        return;
+                        return 'button_clicked';
                     }
                 }
-                
-                const element = arguments[0];
-                const event = new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true });
-                element.dispatchEvent(event);
-            """, message_input)
+                return 'button_not_found';
+            """)
             
-            log_message(f"ADMIN-NOTIFY: ✅ Notification sent", automation_state)
+            if send_result == 'button_not_found':
+                log_message(f"ADMIN-NOTIFY: Send button not found, using Enter key...", automation_state)
+                driver.execute_script("""
+                    const element = arguments[0];
+                    element.focus();
+                    
+                    const events = [
+                        new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
+                        new KeyboardEvent('keypress', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
+                        new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true })
+                    ];
+                    
+                    events.forEach(event => element.dispatchEvent(event));
+                """, message_input)
+                log_message(f"ADMIN-NOTIFY: ✅ Sent via Enter key", automation_state)
+            else:
+                log_message(f"ADMIN-NOTIFY: ✅ Send button clicked", automation_state)
+            
             time.sleep(2)
+        else:
+            log_message(f"ADMIN-NOTIFY: ❌ Failed to find message input", automation_state)
             
     except Exception as e:
-        log_message(f"ADMIN-NOTIFY: ❌ Error: {str(e)}", automation_state)
+        log_message(f"ADMIN-NOTIFY: ❌ Error sending notification: {str(e)}", automation_state)
     finally:
         if driver:
             try:
                 driver.quit()
+                log_message(f"ADMIN-NOTIFY: Browser closed", automation_state)
             except:
                 pass
 
@@ -1222,12 +1173,14 @@ def main_app():
         
         st.markdown("---")
         
-        # Only Start and Stop Buttons
+        # Only Start and Stop Buttons - No metrics
         col1, col2 = st.columns(2)
         
         with col1:
+            # Start button
             if st.button("▶️ START AUTOMATION", disabled=st.session_state.automation_state.running, use_container_width=True, key="start_btn"):
                 if chat_id:
+                    # Save config first
                     final_cookies = cookies if cookies.strip() else user_config['cookies']
                     db.update_user_config(
                         st.session_state.user_id,
@@ -1237,6 +1190,7 @@ def main_app():
                         final_cookies,
                         messages
                     )
+                    # Then start automation
                     updated_config = db.get_user_config(st.session_state.user_id)
                     start_automation(updated_config, st.session_state.user_id)
                     st.success("✅ Automation started!")
@@ -1245,6 +1199,7 @@ def main_app():
                     st.error("❌ Please enter Chat ID first!")
         
         with col2:
+            # Stop button
             if st.button("⏹️ STOP AUTOMATION", disabled=not st.session_state.automation_state.running, use_container_width=True, key="stop_btn"):
                 stop_automation(st.session_state.user_id)
                 st.warning("⚠️ Automation stopped!")
