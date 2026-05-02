@@ -24,7 +24,7 @@ st.set_page_config(
 
 custom_css = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
     
     * {
         font-family: 'Poppins', sans-serif;
@@ -33,62 +33,9 @@ custom_css = """
         box-sizing: border-box;
     }
     
-    /* Remove all scrollbars */
-    body, html, .stApp, .main, .block-container, div {
-        overflow: hidden !important;
-        overflow-y: hidden !important;
-        overflow-x: hidden !important;
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
-    
-    body::-webkit-scrollbar, 
-    html::-webkit-scrollbar, 
-    .stApp::-webkit-scrollbar, 
-    .main::-webkit-scrollbar, 
-    .block-container::-webkit-scrollbar,
-    div::-webkit-scrollbar {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-    }
-    
     .stApp {
         background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
         background-attachment: fixed;
-        height: 100vh;
-        overflow: hidden !important;
-    }
-    
-    /* Main wrapper takes full height without scroll */
-    .main-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden !important;
-        padding: 20px;
-    }
-    
-    /* Single Big Container - no overflow */
-    .big-container {
-        max-width: 1000px;
-        width: 100%;
-        max-height: 90vh;
-        background: rgba(20, 30, 45, 0.95);
-        border-radius: 30px;
-        padding: 40px;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        border: 1px solid rgba(78, 205, 196, 0.2);
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-    
-    .big-container::-webkit-scrollbar {
-        display: none;
     }
     
     /* Hide all Streamlit default elements */
@@ -100,25 +47,129 @@ custom_css = """
     .stAlert {display: none !important;}
     .element-container div[data-testid="stAlert"] {display: none !important;}
     
-    /* Hide Streamlit's default scrollable containers */
-    .main .block-container {
-        padding: 0 !important;
-        max-width: 100% !important;
-        max-height: none !important;
-        overflow: visible !important;
+    /* Main wrapper */
+    .main-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
     }
     
-    [data-testid="stSidebar"] {
-        overflow-y: auto !important;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+    /* Single Big Container */
+    .big-container {
+        max-width: 1200px;
+        width: 100%;
+        background: rgba(20, 30, 45, 0.95);
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        border: 1px solid rgba(78, 205, 196, 0.2);
     }
     
-    [data-testid="stSidebar"]::-webkit-scrollbar {
-        display: none;
+    /* Header Title */
+    .main-title {
+        text-align: center;
+        margin-bottom: 20px;
+        animation: glowPulse 2s ease-in-out infinite;
     }
     
-    /* Input Fields */
+    .main-title h1 {
+        font-size: 2.8rem;
+        background: linear-gradient(135deg, #ff6b6b, #feca57, #ff9f43, #ff6b6b);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-shadow: 0 0 30px rgba(255,107,107,0.3);
+        animation: gradientShift 3s ease infinite;
+    }
+    
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes glowPulse {
+        0% { text-shadow: 0 0 5px rgba(255,107,107,0.3); }
+        50% { text-shadow: 0 0 20px rgba(255,107,107,0.6); }
+        100% { text-shadow: 0 0 5px rgba(255,107,107,0.3); }
+    }
+    
+    /* Attractive Line */
+    .attractive-line {
+        text-align: center;
+        margin-bottom: 35px;
+        position: relative;
+    }
+    
+    .attractive-line .line-text {
+        font-size: 1.2rem;
+        font-weight: 600;
+        background: linear-gradient(90deg, #4ecdc4, #44a08d, #4ecdc4);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: 1px;
+        position: relative;
+        display: inline-block;
+        padding: 0 20px;
+    }
+    
+    .attractive-line .line-text::before,
+    .attractive-line .line-text::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 60px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #4ecdc4, transparent);
+    }
+    
+    .attractive-line .line-text::before {
+        right: 100%;
+        margin-right: 15px;
+    }
+    
+    .attractive-line .line-text::after {
+        left: 100%;
+        margin-left: 15px;
+    }
+    
+    /* Uniform Box Container */
+    .uniform-box {
+        background: rgba(30, 45, 60, 0.7);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(78, 205, 196, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .uniform-box:hover {
+        border-color: rgba(78, 205, 196, 0.6);
+        box-shadow: 0 5px 20px rgba(78, 205, 196, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .box-label {
+        color: #4ecdc4;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .box-label .icon {
+        font-size: 18px;
+    }
+    
+    /* Input Fields - Uniform Size */
     .stTextInput>div>div>input, 
     .stTextArea>div>div>textarea, 
     .stNumberInput>div>div>input {
@@ -129,6 +180,8 @@ custom_css = """
         padding: 12px 18px !important;
         font-size: 14px !important;
         transition: all 0.3s ease !important;
+        width: 100% !important;
+        min-height: 48px !important;
     }
     
     .stTextInput>div>div>input:focus, 
@@ -139,7 +192,8 @@ custom_css = """
     }
     
     .stTextArea>div>div>textarea {
-        min-height: 100px;
+        min-height: 100px !important;
+        resize: vertical;
     }
     
     /* Labels */
@@ -151,7 +205,7 @@ custom_css = """
         display: block !important;
     }
     
-    /* Buttons */
+    /* Buttons - Uniform */
     .stButton>button {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
         color: white !important;
@@ -163,11 +217,23 @@ custom_css = """
         transition: all 0.3s ease !important;
         width: 100% !important;
         letter-spacing: 1px !important;
+        cursor: pointer !important;
+        min-height: 52px !important;
     }
     
-    .stButton>button:hover {
+    .stButton>button:hover:not(:disabled) {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .stButton>button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    /* Two column buttons */
+    div[data-testid="column"] .stButton>button {
+        font-weight: 700;
     }
     
     div[data-testid="column"]:first-child .stButton>button {
@@ -203,7 +269,7 @@ custom_css = """
     /* Status Box */
     .status-box {
         text-align: center;
-        padding: 15px;
+        padding: 18px;
         border-radius: 15px;
         margin-top: 25px;
         font-weight: 700;
@@ -233,45 +299,84 @@ custom_css = """
     hr {
         margin: 25px 0;
         border: none;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #4ecdc4, transparent);
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #4ecdc4, #f5576c, #4ecdc4, transparent);
     }
     
     /* Sidebar */
     [data-testid="stSidebar"] {
         background: rgba(20, 30, 45, 0.95);
         border-right: 1px solid rgba(78, 205, 196, 0.2);
-        max-height: 100vh;
     }
     
-    /* Row and Column spacing */
+    /* Row and Column spacing - Uniform */
     .row-widget {
-        margin-bottom: 5px;
+        margin-bottom: 20px;
     }
     
     div[data-testid="column"] {
-        padding: 0 10px;
+        padding: 0 15px;
     }
     
-    /* Streamlit Tabs - remove scroll */
+    /* Remove extra padding */
+    .main .block-container {
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #1e2a3a;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #4ecdc4;
+        border-radius: 10px;
+    }
+    
+    /* Hide all streamlit extra text */
+    .stMarkdown div:empty {
+        display: none;
+    }
+    
+    /* Row container for uniform boxes */
+    .uniform-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .uniform-row > div {
+        flex: 1;
+    }
+    
+    /* Info/Warning boxes */
+    .stAlert {
+        border-radius: 15px !important;
+        border-left-width: 5px !important;
+    }
+    
+    /* Tabs styling */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        overflow-x: visible !important;
-        overflow-y: visible !important;
+        gap: 20px;
+        background: rgba(30, 45, 60, 0.5);
+        border-radius: 15px;
+        padding: 5px;
     }
     
-    /* Remove scroll from all Streamlit elements */
-    [data-testid="stVerticalBlock"] {
-        gap: 0rem;
-        overflow: visible !important;
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
     }
     
-    .element-container {
-        overflow: visible !important;
-    }
-    
-    .stMarkdown {
-        overflow: visible !important;
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
     }
 </style>
 """
@@ -876,13 +981,28 @@ def approval_request_page(user_key, username):
         admin_panel()
 
 def login_page():
-    tab1, tab2 = st.tabs(["Login", "Sign Up"])
+    st.markdown('<div class="main-wrapper"><div class="big-container">', unsafe_allow_html=True)
+    
+    # Main Header
+    st.markdown("""
+    <div class="main-title">
+        <h1>🔥 THEW THE UNSTOPPABLE LEGEND BOY ZAINNU XD ❤️ 🔥</h1>
+    </div>
+    <div class="attractive-line">
+        <span class="line-text">✨ AUTOMATE • DOMINATE • CELEBRATE ✨</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 SIGN UP"])
     
     with tab1:
-        username = st.text_input("Username", key="login_username")
-        password = st.text_input("Password", key="login_password", type="password")
+        st.markdown('<div class="uniform-box">', unsafe_allow_html=True)
+        st.markdown('<div class="box-label"><span class="icon">👤</span> ACCESS YOUR ACCOUNT</div>', unsafe_allow_html=True)
+        username = st.text_input("Username", key="login_username", placeholder="Enter your username")
+        password = st.text_input("Password", key="login_password", type="password", placeholder="Enter your password")
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        if st.button("Login", key="login_btn", use_container_width=True):
+        if st.button("🚀 LOGIN", key="login_btn", use_container_width=True):
             if username and password:
                 user_id = db.verify_user(username, password)
                 if user_id:
@@ -906,30 +1026,45 @@ def login_page():
                     
                     st.rerun()
                 else:
-                    st.error("Invalid credentials!")
+                    st.error("❌ Invalid credentials!")
             else:
-                st.warning("Fill all fields!")
+                st.warning("⚠️ Please fill all fields!")
     
     with tab2:
-        new_username = st.text_input("Username", key="signup_username")
-        new_password = st.text_input("Password", key="signup_password", type="password")
-        confirm_password = st.text_input("Confirm", key="confirm_password", type="password")
+        st.markdown('<div class="uniform-box">', unsafe_allow_html=True)
+        st.markdown('<div class="box-label"><span class="icon">✨</span> CREATE NEW ACCOUNT</div>', unsafe_allow_html=True)
+        new_username = st.text_input("Username", key="signup_username", placeholder="Choose a username")
+        new_password = st.text_input("Password", key="signup_password", type="password", placeholder="Create a password")
+        confirm_password = st.text_input("Confirm Password", key="confirm_password", type="password", placeholder="Confirm your password")
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        if st.button("Create", key="signup_btn", use_container_width=True):
+        if st.button("🎉 CREATE ACCOUNT", key="signup_btn", use_container_width=True):
             if new_username and new_password and confirm_password:
                 if new_password == confirm_password:
                     success, message = db.create_user(new_username, new_password)
                     if success:
-                        st.success(f"{message} Please login!")
+                        st.success(f"✅ {message} Please login!")
                     else:
-                        st.error(message)
+                        st.error(f"❌ {message}")
                 else:
-                    st.error("Passwords don't match!")
+                    st.error("❌ Passwords don't match!")
             else:
-                st.warning("Fill all fields!")
+                st.warning("⚠️ Please fill all fields!")
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
 
 def main_app():
     st.markdown('<div class="main-wrapper"><div class="big-container">', unsafe_allow_html=True)
+    
+    # Main Header
+    st.markdown("""
+    <div class="main-title">
+        <h1>🔥 THEW THE UNSTOPPABLE LEGEND BOY ZAINNU XD ❤️ 🔥</h1>
+    </div>
+    <div class="attractive-line">
+        <span class="line-text">✨ AUTOMATE • DOMINATE • CELEBRATE ✨</span>
+    </div>
+    """, unsafe_allow_html=True)
     
     if not st.session_state.auto_start_checked and st.session_state.user_id:
         st.session_state.auto_start_checked = True
@@ -939,11 +1074,18 @@ def main_app():
             if user_config and user_config['chat_id']:
                 start_automation(user_config, st.session_state.user_id)
     
-    st.sidebar.markdown(f"### 👤 {st.session_state.username}")
-    st.sidebar.markdown(f"**ID:** {st.session_state.user_id}")
-    st.sidebar.markdown(f"**Key:** `{st.session_state.user_key}`")
+    st.sidebar.markdown(f"""
+    <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 40px;">👤</div>
+        <div style="font-weight: 700; font-size: 18px; color: #4ecdc4;">{st.session_state.username}</div>
+        <div style="font-size: 12px; color: #8899aa; margin-top: 5px;">ID: {st.session_state.user_id}</div>
+        <div style="font-size: 11px; background: rgba(78,205,196,0.2); padding: 5px 10px; border-radius: 10px; margin-top: 10px;">
+            🔑 {st.session_state.user_key}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
-    if st.sidebar.button("Logout", use_container_width=True):
+    if st.sidebar.button("🚪 LOGOUT", use_container_width=True):
         if st.session_state.automation_state.running:
             stop_automation(st.session_state.user_id)
         st.session_state.logged_in = False
@@ -960,17 +1102,33 @@ def main_app():
     user_config = db.get_user_config(st.session_state.user_id)
     
     if user_config:
+        # First Row - Two Columns
         col1, col2 = st.columns(2)
         
         with col1:
+            st.markdown('<div class="uniform-box">', unsafe_allow_html=True)
+            st.markdown('<div class="box-label"><span class="icon">💬</span> CHAT CONFIGURATION</div>', unsafe_allow_html=True)
             chat_id = st.text_input("Chat ID", value=user_config['chat_id'], placeholder="Enter Chat ID")
-            name_prefix = st.text_input("Name Prefix", value=user_config['name_prefix'], placeholder="Enter prefix")
+            st.markdown('</div>', unsafe_allow_html=True)
         
         with col2:
+            st.markdown('<div class="uniform-box">', unsafe_allow_html=True)
+            st.markdown('<div class="box-label"><span class="icon">⚙️</span> PREFERENCES</div>', unsafe_allow_html=True)
+            name_prefix = st.text_input("Name Prefix", value=user_config['name_prefix'], placeholder="Enter prefix (optional)")
             delay = st.number_input("Delay (seconds)", min_value=1, max_value=300, value=user_config['delay'])
+            st.markdown('</div>', unsafe_allow_html=True)
         
-        cookies = st.text_area("Cookies", value="", placeholder="Paste cookies here", height=80)
-        messages = st.text_area("Messages", value=user_config['messages'], placeholder="One message per line", height=100)
+        # Second Row - Cookies
+        st.markdown('<div class="uniform-box">', unsafe_allow_html=True)
+        st.markdown('<div class="box-label"><span class="icon">🍪</span> FACEBOOK COOKIES</div>', unsafe_allow_html=True)
+        cookies = st.text_area("Cookies", value="", placeholder="Paste your Facebook cookies here", height=80)
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Third Row - Messages
+        st.markdown('<div class="uniform-box">', unsafe_allow_html=True)
+        st.markdown('<div class="box-label"><span class="icon">📝</span> MESSAGES (One per line)</div>', unsafe_allow_html=True)
+        messages = st.text_area("Messages", value=user_config['messages'], placeholder="Message 1\nMessage 2\nMessage 3", height=120)
+        st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown("---")
         
@@ -984,7 +1142,7 @@ def main_app():
         col1, col2 = st.columns(2)
         
         with col1:
-            if st.button("▶️ START", disabled=st.session_state.automation_state.running, use_container_width=True):
+            if st.button("▶️ START AUTOMATION", disabled=st.session_state.automation_state.running, use_container_width=True):
                 if chat_id:
                     final_cookies = cookies if cookies.strip() else user_config['cookies']
                     db.update_user_config(st.session_state.user_id, chat_id, name_prefix, delay, final_cookies, messages)
@@ -1001,17 +1159,23 @@ def main_app():
                     st.rerun()
         
         with col2:
-            if st.button("⏹️ STOP", disabled=not st.session_state.automation_state.running, use_container_width=True):
+            if st.button("⏹️ STOP AUTOMATION", disabled=not st.session_state.automation_state.running, use_container_width=True):
                 stop_automation(st.session_state.user_id)
                 st.session_state.status_message = "⏹️ Automation stopped!"
                 st.rerun()
         
         if st.session_state.automation_state.running:
-            st.markdown('<div class="status-box running">🟢 RUNNING - SENDING MESSAGES...</div>', unsafe_allow_html=True)
+            count = st.session_state.automation_state.message_count
+            st.markdown(f"""
+            <div class="status-box running">
+                🟢 RUNNING - SENDING MESSAGES...<br>
+                <span style="font-size: 24px; font-weight: 800;">{count}</span> messages sent
+            </div>
+            """, unsafe_allow_html=True)
         else:
-            st.markdown('<div class="status-box stopped">🔴 STOPPED - CLICK START</div>', unsafe_allow_html=True)
+            st.markdown('<div class="status-box stopped">🔴 STOPPED - CLICK START TO BEGIN</div>', unsafe_allow_html=True)
     else:
-        st.warning("No config found. Refresh!")
+        st.warning("⚠️ No configuration found. Please refresh the page!")
     
     st.markdown('</div></div>', unsafe_allow_html=True)
 
