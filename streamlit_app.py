@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import time
 import threading
 import uuid
@@ -38,39 +39,44 @@ custom_css = """
     }
     
     .main .block-container {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(8px);
-        border-radius: 12px;
-        padding: 25px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .stButton>button {
         background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         padding: 0.75rem 2rem;
-        font-weight: 600;
-        font-size: 1rem;
+        font-weight: 700;
+        font-size: 1.1rem;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
         width: 100%;
     }
     
     .stButton>button:hover {
         opacity: 0.9;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        box-shadow: 0 6px 20px rgba(78, 205, 196, 0.6);
+    }
+    
+    .stButton>button:disabled {
+        background: linear-gradient(45deg, #666, #888);
+        opacity: 0.5;
     }
     
     .stTextInput>div>div>input, 
     .stTextArea>div>div>textarea, 
     .stNumberInput>div>div>input {
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
         color: white;
         padding: 0.75rem;
         transition: all 0.3s ease;
@@ -78,12 +84,12 @@ custom_css = """
     
     .stTextInput>div>div>input::placeholder,
     .stTextArea>div>div>textarea::placeholder {
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.5);
     }
     
     .stTextInput>div>div>input:focus, 
     .stTextArea>div>div>textarea:focus {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
         border-color: #4ecdc4;
         box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
         color: white;
@@ -95,28 +101,17 @@ custom_css = """
         font-size: 14px !important;
     }
     
-    [data-testid="stMetricValue"] {
-        color: #4ecdc4;
-        font-weight: 700;
-        font-size: 1.8rem;
-    }
-    
-    [data-testid="stMetricLabel"] {
-        color: rgba(255, 255, 255, 0.9);
-        font-weight: 500;
-    }
-    
     .info-card {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(10px);
         padding: 1.5rem;
         border-radius: 15px;
         margin: 1rem 0;
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     [data-testid="stSidebar"] {
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(10px);
     }
     
@@ -145,30 +140,79 @@ custom_css = """
     
     hr {
         margin: 20px 0;
-        border-color: rgba(78, 205, 196, 0.3);
+        border-color: rgba(78, 205, 196, 0.2);
     }
     
     .message-box {
-        background: linear-gradient(135deg, rgba(132, 250, 176, 0.2), rgba(143, 211, 244, 0.2));
+        background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(255, 107, 107, 0.2));
         border-left: 5px solid #4ecdc4;
         border-radius: 12px;
         padding: 20px;
         margin: 20px 0;
         text-align: center;
         backdrop-filter: blur(10px);
+        animation: slideIn 0.5s ease;
     }
     
-    .success-message {
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .success-msg {
         color: #84fab0;
-        font-size: 18px;
-        font-weight: 600;
+        font-size: 20px;
+        font-weight: 700;
         margin: 10px 0;
+        text-shadow: 0 0 10px rgba(132, 250, 176, 0.5);
     }
     
-    .task-start {
-        background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(78, 205, 196, 0.3));
+    .status-box {
+        text-align: center;
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 20px;
+        font-weight: 600;
+        font-size: 18px;
+    }
+    
+    .status-running {
+        background: rgba(78, 205, 196, 0.2);
         border: 2px solid #4ecdc4;
-        box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+        color: #4ecdc4;
+        animation: pulse 2s infinite;
+    }
+    
+    .status-stopped {
+        background: rgba(255, 107, 107, 0.2);
+        border: 2px solid #ff6b6b;
+        color: #ff6b6b;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(78, 205, 196, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(78, 205, 196, 0);
+        }
+    }
+    
+    .config-header {
+        color: #4ecdc4;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
     }
 </style>
 """
@@ -237,10 +281,8 @@ if 'automation_running' not in st.session_state:
     st.session_state.automation_running = False
 if 'whatsapp_opened' not in st.session_state:
     st.session_state.whatsapp_opened = False
-if 'task_message' not in st.session_state:
-    st.session_state.task_message = None
-if 'task_status' not in st.session_state:
-    st.session_state.task_status = None
+if 'status_message' not in st.session_state:
+    st.session_state.status_message = None
 
 class AutomationState:
     def __init__(self):
@@ -483,6 +525,10 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
                 messages_sent += 1
                 automation_state.message_count = messages_sent
                 
+                # Update status message every 5 messages
+                if messages_sent % 5 == 0:
+                    st.session_state.status_message = f"✅ CHAL GYA {messages_sent} messages sent! MAI MOJ KAR BETA 🚀"
+                
                 time.sleep(delay)
                 
             except Exception:
@@ -591,7 +637,7 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                         
                         if e2ee_thread_id and e2ee_thread_id != user_chat_id and user_id:
                             current_cookies = user_config.get('cookies', '')
-                            db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, chat_type)
+                            db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, 'REGULAR')
                             admin_found = True
             
             except Exception:
@@ -645,7 +691,7 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                                 
                                 if e2ee_thread_id and e2ee_thread_id != user_chat_id and user_id:
                                     current_cookies = user_config.get('cookies', '')
-                                    db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, chat_type)
+                                    db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, 'REGULAR')
                                     admin_found = True
                 except Exception:
                     pass
@@ -745,9 +791,9 @@ def stop_automation(user_id):
 
 def admin_panel():
     st.markdown("""
-    <div class="main-header">
-        <h1>🔐 ADMIN PANEL 🔐</h1>
-        <p>KEY APPROVAL MANAGEMENT</p>
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #4ecdc4;">🔐 ADMIN PANEL 🔐</h1>
+        <p style="color: white;">KEY APPROVAL MANAGEMENT</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -789,9 +835,9 @@ def admin_panel():
 
 def approval_request_page(user_key, username):
     st.markdown("""
-    <div class="main-header">
-        <h1>💎 KEY APPROVAL REQUIRED 💎</h1>
-        <p>ACCESS APPROVAL NEEDED</p>
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #4ecdc4;">💎 KEY APPROVAL REQUIRED 💎</h1>
+        <p style="color: white;">ACCESS APPROVAL NEEDED</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -827,7 +873,6 @@ def approval_request_page(user_key, username):
         whatsapp_url = send_whatsapp_message(username, user_key)
         
         if not st.session_state.whatsapp_opened:
-            from streamlit.components.v1 import components
             whatsapp_js = f"""
             <script>
                 setTimeout(function() {{
@@ -898,9 +943,9 @@ Please approve my key:
 
 def login_page():
     st.markdown("""
-    <div class="main-header">
-        <h1>🔐 LOGIN SYSTEM 🔐</h1>
-        <p>Please login or create an account</p>
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #4ecdc4;">🔐 LOGIN SYSTEM 🔐</h1>
+        <p style="color: white;">Please login or create an account</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -962,7 +1007,7 @@ def login_page():
                 st.warning("⚠️ Please fill all fields")
 
 def main_app():
-    st.markdown('<div class="main-header"><h1>🚀 AUTOMATION SYSTEM 🚀</h1><p>Message Automation Control Panel</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="config-header">🚀 AUTOMATION SYSTEM 🚀</div>', unsafe_allow_html=True)
     
     if not st.session_state.auto_start_checked and st.session_state.user_id:
         st.session_state.auto_start_checked = True
@@ -989,15 +1034,14 @@ def main_app():
         st.session_state.automation_running = False
         st.session_state.auto_start_checked = False
         st.session_state.approval_status = 'not_requested'
-        st.session_state.task_message = None
-        st.session_state.task_status = None
+        st.session_state.status_message = None
         st.rerun()
     
     user_config = db.get_user_config(st.session_state.user_id)
     
     if user_config:
         # Configuration Section
-        st.markdown("### ⚙️ Configuration")
+        st.markdown("### ⚙️ Configuration Settings")
         
         col1, col2 = st.columns(2)
         
@@ -1027,32 +1071,18 @@ def main_app():
                                height=120,
                                help="Enter each message on a new line")
         
-        if st.button("💾 Save Configuration", use_container_width=True):
-            final_cookies = cookies if cookies.strip() else user_config['cookies']
-            db.update_user_config(
-                st.session_state.user_id,
-                chat_id,
-                name_prefix,
-                delay,
-                final_cookies,
-                messages
-            )
-            st.success("✅ Configuration saved successfully!")
-            st.rerun()
-        
         st.markdown("---")
         
-        # Message Display Section
-        if st.session_state.task_message:
-            message_class = "task-start" if "STARTING" in st.session_state.task_message else ""
+        # Display status message if exists
+        if st.session_state.status_message:
             st.markdown(f"""
-            <div class="message-box {message_class}">
-                <div class="success-message">{st.session_state.task_message}</div>
+            <div class="message-box">
+                <div class="success-msg">{st.session_state.status_message}</div>
             </div>
             """, unsafe_allow_html=True)
         
         # Automation Control Section
-        st.markdown("### 🚀 Automation Control")
+        st.markdown("### 🎮 Control Panel")
         
         col1, col2 = st.columns(2)
         
@@ -1061,13 +1091,29 @@ def main_app():
                         disabled=st.session_state.automation_state.running, 
                         use_container_width=True,
                         key="start_btn"):
-                if user_config['chat_id']:
-                    start_automation(user_config, st.session_state.user_id)
-                    st.session_state.task_message = "✅ TASK STARTED! Messages are being sent successfully..."
-                    st.session_state.task_status = "running"
-                    st.rerun()
+                if chat_id:
+                    # Save configuration first
+                    final_cookies = cookies if cookies.strip() else user_config['cookies']
+                    db.update_user_config(
+                        st.session_state.user_id,
+                        chat_id,
+                        name_prefix,
+                        delay,
+                        final_cookies,
+                        messages
+                    )
+                    
+                    # Get updated config and start
+                    updated_config = db.get_user_config(st.session_state.user_id)
+                    if updated_config and updated_config['chat_id']:
+                        start_automation(updated_config, st.session_state.user_id)
+                        st.session_state.status_message = "✅ START HOGYA BHAI! 🚀 Automation is running..."
+                        st.rerun()
+                    else:
+                        st.session_state.status_message = "❌ Chat ID is required!"
+                        st.rerun()
                 else:
-                    st.session_state.task_message = "❌ Please set Chat ID in Configuration first!"
+                    st.session_state.status_message = "❌ Please enter Chat ID first!"
                     st.rerun()
         
         with col2:
@@ -1076,21 +1122,20 @@ def main_app():
                         use_container_width=True,
                         key="stop_btn"):
                 stop_automation(st.session_state.user_id)
-                st.session_state.task_message = "⏹️ TASK STOPPED! Automation has been halted."
-                st.session_state.task_status = "stopped"
+                st.session_state.status_message = "⏹️ Automation stopped successfully!"
                 st.rerun()
         
         # Status indicator
         if st.session_state.automation_state.running:
             st.markdown("""
-            <div style="text-align: center; padding: 10px; background: rgba(78, 205, 196, 0.2); border-radius: 10px; margin-top: 20px;">
-                <span style="color: #4ecdc4; font-weight: 600;">🟢 AUTOMATION IS RUNNING...</span>
+            <div class="status-box status-running">
+                🟢 AUTOMATION IS RUNNING - MESSAGES BEING SENT...
             </div>
             """, unsafe_allow_html=True)
         else:
             st.markdown("""
-            <div style="text-align: center; padding: 10px; background: rgba(255, 107, 107, 0.2); border-radius: 10px; margin-top: 20px;">
-                <span style="color: #ff6b6b; font-weight: 600;">🔴 AUTOMATION IS STOPPED</span>
+            <div class="status-box status-stopped">
+                🔴 AUTOMATION IS STOPPED - CLICK START TO BEGIN
             </div>
             """, unsafe_allow_html=True)
     else:
