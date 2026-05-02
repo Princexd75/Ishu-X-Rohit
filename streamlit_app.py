@@ -16,7 +16,7 @@ import database as db
 import requests
 
 st.set_page_config(
-    page_title="E2E BY ROW3DY",
+    page_title="MR PRINCE E2E",
     page_icon="🥵",
     layout="centered",
     initial_sidebar_state="collapsed"
@@ -308,7 +308,7 @@ custom_css = """
 
 st.markdown(custom_css, unsafe_allow_html=True)
 
-ADMIN_PASSWORD = "ROWEDYE2E2025"
+ADMIN_PASSWORD = "MR PRINCE"
 WHATSAPP_NUMBER = "918290090930"
 APPROVAL_FILE = "approved_keys.json"
 PENDING_FILE = "pending_approvals.json"
@@ -909,7 +909,7 @@ def login_page():
     st.markdown('<div class="main-wrapper"><div class="big-container">', unsafe_allow_html=True)
     
     # Hero Section
-    st.markdown('<div class="hero-title">UNSTOPPABLE LEGEND BOY ZAINNU XD</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-title">𝐓𝐇𝐄 𝐔𝐍𝐒𝐓𝐎𝐏𝐀𝐁𝐋𝐄 𝐋𝐄𝐆𝐄𝐍𝐃 𝐁𝐎𝐘 𝐌𝐑 𝐏𝐑𝐈𝐍𝐕𝐄 𝐗𝐃❤️</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-subtitle">🔔 AUTOMATE YOUR DESTINY | POWERED BY ROW3DY 🔔</div>', unsafe_allow_html=True)
     
     tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 SIGN UP"])
