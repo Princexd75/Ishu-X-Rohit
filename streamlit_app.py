@@ -47,16 +47,22 @@ custom_css = """
     .stAlert {display: none !important;}
     .element-container div[data-testid="stAlert"] {display: none !important;}
     
-    /* Main wrapper */
-    .main-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 20px;
+    /* Remove all default padding and margins */
+    .main .block-container {
+        padding: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        max-width: 100% !important;
     }
     
-    /* Single Big Container */
+    /* Main wrapper - top aligned */
+    .main-wrapper {
+        width: 100%;
+        padding: 20px;
+        min-height: auto;
+    }
+    
+    /* Single Big Container - top aligned */
     .big-container {
         max-width: 1000px;
         width: 100%;
@@ -65,6 +71,7 @@ custom_css = """
         padding: 40px;
         box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         border: 1px solid #1a5a3a;
+        margin: 0;
     }
     
     /* Input Fields */
@@ -193,12 +200,6 @@ custom_css = """
         padding: 0 10px;
     }
     
-    /* Remove extra padding */
-    .main .block-container {
-        padding: 0 !important;
-        max-width: 100% !important;
-    }
-    
     /* Custom scrollbar */
     ::-webkit-scrollbar {
         width: 8px;
@@ -252,6 +253,31 @@ custom_css = """
     /* Number input */
     .stNumberInput input {
         color: white !important;
+    }
+    
+    /* Remove empty space from top of app */
+    section.main > div {
+        padding-top: 0 !important;
+    }
+    
+    /* Ensure content starts from top */
+    .stApp > header {
+        display: none;
+    }
+    
+    .stApp > div {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    /* Remove extra spacing from columns */
+    .row-widget.stHorizontal {
+        margin-top: 0 !important;
+    }
+    
+    /* Compact sidebar spacing */
+    [data-testid="stSidebar"] > div:first-child {
+        padding-top: 20px !important;
     }
 </style>
 """
@@ -856,6 +882,9 @@ def approval_request_page(user_key, username):
         admin_panel()
 
 def login_page():
+    # Use a container without wrapper for login
+    st.markdown('<div class="main-wrapper"><div class="big-container">', unsafe_allow_html=True)
+    
     tab1, tab2 = st.tabs(["Login", "Sign Up"])
     
     with tab1:
@@ -907,6 +936,8 @@ def login_page():
                     st.error("Passwords don't match!")
             else:
                 st.warning("Fill all fields!")
+    
+    st.markdown('</div></div>', unsafe_allow_html=True)
 
 def main_app():
     st.markdown('<div class="main-wrapper"><div class="big-container">', unsafe_allow_html=True)
