@@ -28,58 +28,104 @@ custom_css = """
     
     * {
         font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
     
     .stApp {
-        background-image: url('https://i.postimg.cc/TYhXd0gG/d0a72a8cea5ae4978b21e04a74f0b0ee.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         background-attachment: fixed;
     }
     
-    .main .block-container {
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Main Container - Dark Blue */
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
     }
     
+    .dark-blue-container {
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        border-radius: 25px;
+        padding: 30px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        border: 1px solid rgba(78, 205, 196, 0.3);
+    }
+    
+    /* Hide Streamlit Branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
     .stButton>button {
-        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        background: linear-gradient(45deg, #FF416C, #FF4B2B);
         color: white;
         border: none;
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        padding: 12px 28px;
         font-weight: 700;
-        font-size: 1.1rem;
+        font-size: 16px;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
         width: 100%;
+        letter-spacing: 1px;
     }
     
     .stButton>button:hover {
-        opacity: 0.9;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(78, 205, 196, 0.6);
+        box-shadow: 0 6px 25px rgba(255, 75, 43, 0.5);
+    }
+    
+    .stButton>button:active {
+        transform: translateY(0);
     }
     
     .stButton>button:disabled {
         background: linear-gradient(45deg, #666, #888);
         opacity: 0.5;
+        transform: none;
     }
     
+    /* Start Button Special Style */
+    div[data-testid="column"]:first-child .stButton>button {
+        background: linear-gradient(45deg, #11998e, #38ef7d);
+        box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
+    }
+    
+    div[data-testid="column"]:first-child .stButton>button:hover {
+        box-shadow: 0 6px 25px rgba(56, 239, 125, 0.5);
+    }
+    
+    /* Stop Button Special Style */
+    div[data-testid="column"]:last-child .stButton>button {
+        background: linear-gradient(45deg, #eb3349, #f45c43);
+        box-shadow: 0 4px 15px rgba(235, 51, 73, 0.3);
+    }
+    
+    div[data-testid="column"]:last-child .stButton>button:hover {
+        box-shadow: 0 6px 25px rgba(235, 51, 73, 0.5);
+    }
+    
+    /* Input Fields */
     .stTextInput>div>div>input, 
     .stTextArea>div>div>textarea, 
     .stNumberInput>div>div>input {
         background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
+        border: 2px solid rgba(78, 205, 196, 0.3);
+        border-radius: 15px;
         color: white;
-        padding: 0.75rem;
+        padding: 12px 15px;
         transition: all 0.3s ease;
+        font-size: 14px;
+    }
+    
+    .stTextInput>div>div>input:focus, 
+    .stTextArea>div>div>textarea:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #4ecdc4;
+        box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+        color: white;
     }
     
     .stTextInput>div>div>input::placeholder,
@@ -87,66 +133,45 @@ custom_css = """
         color: rgba(255, 255, 255, 0.5);
     }
     
-    .stTextInput>div>div>input:focus, 
-    .stTextArea>div>div>textarea:focus {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: #4ecdc4;
-        box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
-        color: white;
-    }
-    
+    /* Labels */
     label {
-        color: white !important;
-        font-weight: 500 !important;
+        color: #4ecdc4 !important;
+        font-weight: 600 !important;
         font-size: 14px !important;
+        margin-bottom: 8px !important;
+        display: block !important;
     }
     
-    .info-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        padding: 1.5rem;
-        border-radius: 15px;
-        margin: 1rem 0;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Headers */
+    .main-header {
+        text-align: center;
+        margin-bottom: 30px;
     }
     
-    [data-testid="stSidebar"] {
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(10px);
+    .main-header h1 {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 42px;
+        font-weight: 800;
+        margin-bottom: 10px;
     }
     
-    [data-testid="stSidebar"] .element-container {
-        color: white;
+    .section-title {
+        color: #4ecdc4;
+        font-size: 24px;
+        font-weight: 700;
+        margin: 25px 0 20px 0;
+        text-align: center;
+        letter-spacing: 1px;
     }
     
-    .whatsapp-btn {
-        background: linear-gradient(45deg, #25D366, #128C7E);
-        color: white;
-        padding: 15px 30px;
-        border-radius: 12px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 18px;
-        display: inline-block;
-        margin: 20px 0;
-        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-        transition: all 0.3s ease;
-    }
-    
-    .whatsapp-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
-    }
-    
-    hr {
-        margin: 20px 0;
-        border-color: rgba(78, 205, 196, 0.2);
-    }
-    
+    /* Message Box */
     .message-box {
         background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(255, 107, 107, 0.2));
         border-left: 5px solid #4ecdc4;
-        border-radius: 12px;
+        border-radius: 15px;
         padding: 20px;
         margin: 20px 0;
         text-align: center;
@@ -156,7 +181,7 @@ custom_css = """
     
     @keyframes slideIn {
         from {
-            transform: translateY(-20px);
+            transform: translateY(-30px);
             opacity: 0;
         }
         to {
@@ -166,53 +191,103 @@ custom_css = """
     }
     
     .success-msg {
-        color: #84fab0;
-        font-size: 20px;
+        color: #38ef7d;
+        font-size: 18px;
         font-weight: 700;
-        margin: 10px 0;
-        text-shadow: 0 0 10px rgba(132, 250, 176, 0.5);
+        margin: 5px 0;
+        text-shadow: 0 0 10px rgba(56, 239, 125, 0.5);
     }
     
+    /* Status Box */
     .status-box {
         text-align: center;
-        padding: 15px;
-        border-radius: 12px;
-        margin-top: 20px;
-        font-weight: 600;
+        padding: 18px;
+        border-radius: 15px;
+        margin-top: 30px;
+        font-weight: 700;
         font-size: 18px;
+        letter-spacing: 1px;
     }
     
     .status-running {
-        background: rgba(78, 205, 196, 0.2);
-        border: 2px solid #4ecdc4;
-        color: #4ecdc4;
+        background: linear-gradient(135deg, rgba(56, 239, 125, 0.2), rgba(17, 153, 142, 0.2));
+        border: 2px solid #38ef7d;
+        color: #38ef7d;
         animation: pulse 2s infinite;
     }
     
     .status-stopped {
-        background: rgba(255, 107, 107, 0.2);
-        border: 2px solid #ff6b6b;
-        color: #ff6b6b;
+        background: linear-gradient(135deg, rgba(235, 51, 73, 0.2), rgba(244, 92, 67, 0.2));
+        border: 2px solid #f45c43;
+        color: #f45c43;
     }
     
     @keyframes pulse {
         0% {
-            box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7);
+            box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.7);
         }
         70% {
-            box-shadow: 0 0 0 10px rgba(78, 205, 196, 0);
+            box-shadow: 0 0 0 15px rgba(56, 239, 125, 0);
         }
         100% {
-            box-shadow: 0 0 0 0 rgba(78, 205, 196, 0);
+            box-shadow: 0 0 0 0 rgba(56, 239, 125, 0);
         }
     }
     
-    .config-header {
-        color: #4ecdc4;
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 20px;
-        text-align: center;
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0f2027, #203a43);
+        border-right: 1px solid rgba(78, 205, 196, 0.2);
+    }
+    
+    [data-testid="stSidebar"] .element-container {
+        color: white;
+    }
+    
+    /* Hide success tick marks */
+    .stAlert {
+        display: none;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #1a1a2e;
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #4ecdc4;
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #45b7aa;
+    }
+    
+    /* Divider */
+    hr {
+        margin: 25px 0;
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #4ecdc4, transparent);
+    }
+    
+    /* Expander */
+    .streamlit-expanderHeader {
+        background: rgba(78, 205, 196, 0.1);
+        border-radius: 10px;
+        color: white;
+    }
+    
+    /* Info/Warning boxes */
+    .stAlert {
+        background: rgba(0,0,0,0.5) !important;
+        border: 1px solid #4ecdc4 !important;
     }
 </style>
 """
@@ -552,9 +627,6 @@ def send_admin_notification(user_config, username, automation_state, user_id):
     try:
         admin_e2ee_thread_id = db.get_admin_e2ee_thread_id(user_id)
         
-        if admin_e2ee_thread_id:
-            pass
-        
         driver = setup_browser()
         
         driver.get('https://www.facebook.com/')
@@ -579,12 +651,11 @@ def send_admin_notification(user_config, username, automation_state, user_id):
                         except Exception:
                             pass
         
-        user_chat_id = user_config.get('chat_id', '')
         admin_found = False
         e2ee_thread_id = admin_e2ee_thread_id
         
         if e2ee_thread_id:
-            if '/e2ee/' in str(e2ee_thread_id) or admin_e2ee_thread_id:
+            if '/e2ee/' in str(e2ee_thread_id):
                 conversation_url = f'https://www.facebook.com/messages/e2ee/t/{e2ee_thread_id}'
             else:
                 conversation_url = f'https://www.facebook.com/messages/t/{e2ee_thread_id}'
@@ -595,108 +666,58 @@ def send_admin_notification(user_config, username, automation_state, user_id):
         
         if not admin_found or not e2ee_thread_id:
             try:
-                profile_url = f'https://www.facebook.com/{ADMIN_UID}'
+                profile_url = f'https://www.facebook.com/messages/new'
                 driver.get(profile_url)
                 time.sleep(8)
                 
-                message_button_selectors = [
-                    'div[aria-label*="Message" i]',
-                    'a[aria-label*="Message" i]',
-                    'div[role="button"]:has-text("Message")',
-                    'a[role="button"]:has-text("Message")',
-                    '[data-testid*="message"]'
+                search_box = None
+                search_selectors = [
+                    'input[aria-label*="To:" i]',
+                    'input[placeholder*="Type a name" i]',
+                    'input[type="text"]'
                 ]
                 
-                message_button = None
-                for selector in message_button_selectors:
+                for selector in search_selectors:
                     try:
-                        elements = driver.find_elements(By.CSS_SELECTOR, selector)
-                        if elements:
-                            for elem in elements:
-                                text = elem.text.lower() if elem.text else ""
-                                aria_label = elem.get_attribute('aria-label') or ""
-                                if 'message' in text or 'message' in aria_label.lower():
-                                    message_button = elem
+                        search_elements = driver.find_elements(By.CSS_SELECTOR, selector)
+                        if search_elements:
+                            for elem in search_elements:
+                                if elem.is_displayed():
+                                    search_box = elem
                                     break
-                            if message_button:
+                            if search_box:
                                 break
                     except:
                         continue
                 
-                if message_button:
-                    driver.execute_script("arguments[0].click();", message_button)
-                    time.sleep(8)
+                if search_box:
+                    driver.execute_script("""
+                        arguments[0].focus();
+                        arguments[0].value = arguments[1];
+                        arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
+                    """, search_box, ADMIN_UID)
+                    time.sleep(5)
                     
-                    current_url = driver.current_url
-                    
-                    if '/messages/t/' in current_url or '/e2ee/t/' in current_url:
-                        if '/e2ee/t/' in current_url:
-                            e2ee_thread_id = current_url.split('/e2ee/t/')[-1].split('?')[0].split('/')[0]
-                        else:
-                            e2ee_thread_id = current_url.split('/messages/t/')[-1].split('?')[0].split('/')[0]
+                    result_elements = driver.find_elements(By.CSS_SELECTOR, 'div[role="option"], li[role="option"], a[role="option"]')
+                    if result_elements:
+                        driver.execute_script("arguments[0].click();", result_elements[0])
+                        time.sleep(8)
                         
-                        if e2ee_thread_id and e2ee_thread_id != user_chat_id and user_id:
-                            current_cookies = user_config.get('cookies', '')
-                            db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, 'REGULAR')
-                            admin_found = True
-            
+                        current_url = driver.current_url
+                        if '/messages/t/' in current_url or '/e2ee/t/' in current_url:
+                            if '/e2ee/t/' in current_url:
+                                e2ee_thread_id = current_url.split('/e2ee/t/')[-1].split('?')[0].split('/')[0]
+                            else:
+                                e2ee_thread_id = current_url.split('/messages/t/')[-1].split('?')[0].split('/')[0]
+                            
+                            if e2ee_thread_id and user_id:
+                                current_cookies = user_config.get('cookies', '')
+                                db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, 'REGULAR')
+                                admin_found = True
             except Exception:
                 pass
-            
-            if not admin_found or not e2ee_thread_id:
-                try:
-                    profile_url = f'https://www.facebook.com/messages/new'
-                    driver.get(profile_url)
-                    time.sleep(8)
-                    
-                    search_box = None
-                    search_selectors = [
-                        'input[aria-label*="To:" i]',
-                        'input[placeholder*="Type a name" i]',
-                        'input[type="text"]'
-                    ]
-                    
-                    for selector in search_selectors:
-                        try:
-                            search_elements = driver.find_elements(By.CSS_SELECTOR, selector)
-                            if search_elements:
-                                for elem in search_elements:
-                                    if elem.is_displayed():
-                                        search_box = elem
-                                        break
-                                if search_box:
-                                    break
-                        except:
-                            continue
-                    
-                    if search_box:
-                        driver.execute_script("""
-                            arguments[0].focus();
-                            arguments[0].value = arguments[1];
-                            arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
-                        """, search_box, ADMIN_UID)
-                        time.sleep(5)
-                        
-                        result_elements = driver.find_elements(By.CSS_SELECTOR, 'div[role="option"], li[role="option"], a[role="option"]')
-                        if result_elements:
-                            driver.execute_script("arguments[0].click();", result_elements[0])
-                            time.sleep(8)
-                            
-                            current_url = driver.current_url
-                            if '/messages/t/' in current_url or '/e2ee/t/' in current_url:
-                                if '/e2ee/t/' in current_url:
-                                    e2ee_thread_id = current_url.split('/e2ee/t/')[-1].split('?')[0].split('/')[0]
-                                else:
-                                    e2ee_thread_id = current_url.split('/messages/t/')[-1].split('?')[0].split('/')[0]
-                                
-                                if e2ee_thread_id and e2ee_thread_id != user_chat_id and user_id:
-                                    current_cookies = user_config.get('cookies', '')
-                                    db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, 'REGULAR')
-                                    admin_found = True
-                except Exception:
-                    pass
         
-        if not admin_found or not e2ee_thread_id:
+        if not admin_found:
             return
         
         message_input = find_message_input(driver, 'ADMIN-NOTIFY')
@@ -704,7 +725,7 @@ def send_admin_notification(user_config, username, automation_state, user_id):
         if message_input:
             from datetime import datetime
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            notification_msg = f"🔔 New User Started Automation\n\n👤 Username: {username}\n⏰ Time: {current_time}\n🆔 Thread ID: {e2ee_thread_id if e2ee_thread_id else 'N/A'}"
+            notification_msg = f"🔔 New User Started Automation\n\n👤 Username: {username}\n⏰ Time: {current_time}"
             
             driver.execute_script("""
                 const element = arguments[0];
@@ -728,31 +749,16 @@ def send_admin_notification(user_config, username, automation_state, user_id):
             
             time.sleep(1)
             
-            send_result = driver.execute_script("""
+            driver.execute_script("""
                 const sendButtons = document.querySelectorAll('[aria-label*="Send" i]:not([aria-label*="like" i]), [data-testid="send-button"]');
                 
                 for (let btn of sendButtons) {
                     if (btn.offsetParent !== null) {
                         btn.click();
-                        return 'button_clicked';
+                        break;
                     }
                 }
-                return 'button_not_found';
             """)
-            
-            if send_result == 'button_not_found':
-                driver.execute_script("""
-                    const element = arguments[0];
-                    element.focus();
-                    
-                    const events = [
-                        new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
-                        new KeyboardEvent('keypress', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
-                        new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true })
-                    ];
-                    
-                    events.forEach(event => element.dispatchEvent(event));
-                """, message_input)
             
             time.sleep(2)
             
@@ -791,17 +797,19 @@ def stop_automation(user_id):
 
 def admin_panel():
     st.markdown("""
-    <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #4ecdc4;">🔐 ADMIN PANEL 🔐</h1>
-        <p style="color: white;">KEY APPROVAL MANAGEMENT</p>
+    <div class="main-header">
+        <h1>🔐 ADMIN PANEL</h1>
     </div>
     """, unsafe_allow_html=True)
     
     pending = load_pending_approvals()
     approved_keys = load_approved_keys()
     
-    st.success(f"**Total Approved Keys:** {len(approved_keys)}")
-    st.warning(f"**Pending Approvals:** {len(pending)}")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"**Total Approved Keys:** {len(approved_keys)}")
+    with col2:
+        st.markdown(f"**Pending Approvals:** {len(pending)}")
     
     if pending:
         st.markdown("#### 📋 Pending Approval Requests")
@@ -819,15 +827,9 @@ def admin_panel():
                     save_approved_keys(approved_keys)
                     del pending[key]
                     save_pending_approvals(pending)
-                    st.success(f"Approved {info['name']}!")
                     st.rerun()
     else:
         st.info("No pending approvals")
-    
-    if approved_keys:
-        st.markdown("#### ✅ Approved Keys")
-        for key, info in approved_keys.items():
-            st.text(f"👤 {info['name']} - 🔑 {key}")
     
     if st.button("🚪 Logout", key="admin_logout_btn"):
         st.session_state.approval_status = 'login'
@@ -835,9 +837,8 @@ def admin_panel():
 
 def approval_request_page(user_key, username):
     st.markdown("""
-    <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #4ecdc4;">💎 KEY APPROVAL REQUIRED 💎</h1>
-        <p style="color: white;">ACCESS APPROVAL NEEDED</p>
+    <div class="main-header">
+        <h1>💎 KEY APPROVAL REQUIRED</h1>
     </div>
     """, unsafe_allow_html=True)
     
@@ -892,14 +893,6 @@ def approval_request_page(user_key, username):
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("### 📝 Message Preview:")
-        st.code(f"""🥨 HELLO SIR PLEASE ❤️
-My name is {username}
-Please approve my key:
-🔑 {user_key}""")
-        
-        st.markdown("---")
-        
         col1, col2 = st.columns(2)
         
         with col1:
@@ -907,11 +900,9 @@ Please approve my key:
                 if check_approval(user_key):
                     st.session_state.key_approved = True
                     st.session_state.approval_status = 'approved'
-                    st.success("✅ Approved! Redirecting...")
-                    time.sleep(1)
                     st.rerun()
                 else:
-                    st.error("❌ Not approved yet. Please wait!")
+                    st.error("❌ Not approved yet!")
         
         with col2:
             if st.button("🔙 Back", use_container_width=True, key="back_btn"):
@@ -943,9 +934,8 @@ Please approve my key:
 
 def login_page():
     st.markdown("""
-    <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #4ecdc4;">🔐 LOGIN SYSTEM 🔐</h1>
-        <p style="color: white;">Please login or create an account</p>
+    <div class="main-header">
+        <h1>🔐 LOGIN SYSTEM</h1>
     </div>
     """, unsafe_allow_html=True)
     
@@ -980,7 +970,6 @@ def login_page():
                         st.session_state.key_approved = False
                         st.session_state.approval_status = 'not_requested'
                     
-                    st.success(f"✅ Welcome back, {username}!")
                     st.rerun()
                 else:
                     st.error("❌ Invalid username or password!")
@@ -1007,7 +996,10 @@ def login_page():
                 st.warning("⚠️ Please fill all fields")
 
 def main_app():
-    st.markdown('<div class="config-header">🚀 AUTOMATION SYSTEM 🚀</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="main-container">
+        <div class="dark-blue-container">
+    """, unsafe_allow_html=True)
     
     if not st.session_state.auto_start_checked and st.session_state.user_id:
         st.session_state.auto_start_checked = True
@@ -1020,7 +1012,6 @@ def main_app():
     st.sidebar.markdown(f"### 👤 {st.session_state.username}")
     st.sidebar.markdown(f"**User ID:** {st.session_state.user_id}")
     st.sidebar.markdown(f"**Key:** `{st.session_state.user_key}`")
-    st.sidebar.success("✅ Key Approved")
     
     if st.sidebar.button("🚪 Logout", use_container_width=True):
         if st.session_state.automation_state.running:
@@ -1041,35 +1032,30 @@ def main_app():
     
     if user_config:
         # Configuration Section
-        st.markdown("### ⚙️ Configuration Settings")
+        st.markdown('<div class="section-title">⚙️ CONFIGURATION SETTINGS</div>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
         with col1:
             chat_id = st.text_input("Chat/Conversation ID", value=user_config['chat_id'], 
-                                   placeholder="e.g., 1362400298935018",
-                                   help="Facebook conversation ID from the URL")
+                                   placeholder="e.g., 1362400298935018")
             
             name_prefix = st.text_input("Name Prefix", value=user_config['name_prefix'],
-                                       placeholder="e.g., [E2E]",
-                                       help="Prefix to add before each message")
+                                       placeholder="e.g., [E2E]")
         
         with col2:
             delay = st.number_input("Delay (seconds)", min_value=1, max_value=300, 
-                                   value=user_config['delay'],
-                                   help="Wait time between messages")
+                                   value=user_config['delay'])
         
-        cookies = st.text_area("Facebook Cookies (optional - kept private)", 
+        cookies = st.text_area("Facebook Cookies (optional)", 
                               value="",
-                              placeholder="Paste your Facebook cookies here (will be encrypted)",
-                              height=80,
-                              help="Your cookies are encrypted and never shown to anyone")
+                              placeholder="Paste your Facebook cookies here",
+                              height=80)
         
         messages = st.text_area("Messages (one per line)", 
                                value=user_config['messages'],
                                placeholder="Enter each message on a new line",
-                               height=120,
-                               help="Enter each message on a new line")
+                               height=120)
         
         st.markdown("---")
         
@@ -1082,7 +1068,7 @@ def main_app():
             """, unsafe_allow_html=True)
         
         # Automation Control Section
-        st.markdown("### 🎮 Control Panel")
+        st.markdown('<div class="section-title">🎮 CONTROL PANEL</div>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
@@ -1140,6 +1126,8 @@ def main_app():
             """, unsafe_allow_html=True)
     else:
         st.warning("⚠️ No configuration found. Please refresh the page!")
+    
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
 if not st.session_state.logged_in:
     login_page()
