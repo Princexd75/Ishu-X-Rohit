@@ -47,24 +47,34 @@ custom_css = """
     .stAlert {display: none !important;}
     .element-container div[data-testid="stAlert"] {display: none !important;}
     
-    /* Main wrapper */
+    /* Remove all default padding/margin */
+    .main .block-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+    
+    /* Main wrapper - no padding top */
     .main-wrapper {
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
         min-height: 100vh;
-        padding: 20px;
+        padding: 0;
+        margin: 0;
     }
     
-    /* Single Big Container */
+    /* Single Big Container - fixed at top */
     .big-container {
         max-width: 1000px;
         width: 100%;
         background: rgba(20, 30, 45, 0.95);
-        border-radius: 30px;
-        padding: 40px;
+        border-radius: 0 0 30px 30px;
+        padding: 25px 40px 40px 40px;
+        margin: 0 auto;
         box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         border: 1px solid rgba(78, 205, 196, 0.2);
+        border-top: none;
     }
     
     /* Input Fields */
@@ -73,9 +83,9 @@ custom_css = """
     .stNumberInput>div>div>input {
         background: #1e2a3a !important;
         border: 2px solid #2c3e50 !important;
-        border-radius: 15px !important;
+        border-radius: 12px !important;
         color: white !important;
-        padding: 12px 18px !important;
+        padding: 10px 15px !important;
         font-size: 14px !important;
         transition: all 0.3s ease !important;
     }
@@ -83,12 +93,12 @@ custom_css = """
     .stTextInput>div>div>input:focus, 
     .stTextArea>div>div>textarea:focus {
         border-color: #4ecdc4 !important;
-        box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2) !important;
+        box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2) !important;
         background: #1a2a3a !important;
     }
     
     .stTextArea>div>div>textarea {
-        min-height: 100px;
+        min-height: 80px;
     }
     
     /* Labels */
@@ -96,7 +106,7 @@ custom_css = """
         color: #4ecdc4 !important;
         font-weight: 600 !important;
         font-size: 13px !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 5px !important;
         display: block !important;
     }
     
@@ -105,18 +115,18 @@ custom_css = """
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
         color: white !important;
         border: none !important;
-        border-radius: 15px !important;
-        padding: 14px !important;
+        border-radius: 12px !important;
+        padding: 12px !important;
         font-weight: 700 !important;
-        font-size: 16px !important;
+        font-size: 15px !important;
         transition: all 0.3s ease !important;
         width: 100% !important;
         letter-spacing: 1px !important;
     }
     
     .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
     }
     
     div[data-testid="column"]:first-child .stButton>button {
@@ -130,33 +140,33 @@ custom_css = """
     /* Message Box */
     .msg-box {
         background: rgba(78, 205, 196, 0.1);
-        border-radius: 15px;
-        padding: 15px;
-        margin: 20px 0;
+        border-radius: 12px;
+        padding: 12px;
+        margin: 15px 0;
         text-align: center;
         border: 1px solid rgba(78, 205, 196, 0.3);
-        animation: fadeIn 0.5s ease;
+        animation: fadeIn 0.3s ease;
     }
     
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
+        from { opacity: 0; transform: translateY(-5px); }
         to { opacity: 1; transform: translateY(0); }
     }
     
     .msg-text {
         color: #38ef7d;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
     }
     
     /* Status Box */
     .status-box {
         text-align: center;
-        padding: 15px;
-        border-radius: 15px;
-        margin-top: 25px;
+        padding: 12px;
+        border-radius: 12px;
+        margin-top: 20px;
         font-weight: 700;
-        font-size: 16px;
+        font-size: 15px;
     }
     
     .running {
@@ -174,13 +184,13 @@ custom_css = """
     
     @keyframes pulse {
         0% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.4); }
-        70% { box-shadow: 0 0 0 10px rgba(56, 239, 125, 0); }
+        70% { box-shadow: 0 0 0 8px rgba(56, 239, 125, 0); }
         100% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
     }
     
     /* Divider */
     hr {
-        margin: 25px 0;
+        margin: 15px 0;
         border: none;
         height: 1px;
         background: linear-gradient(90deg, transparent, #4ecdc4, transparent);
@@ -190,26 +200,30 @@ custom_css = """
     [data-testid="stSidebar"] {
         background: rgba(20, 30, 45, 0.95);
         border-right: 1px solid rgba(78, 205, 196, 0.2);
+        margin-top: 0;
     }
     
     /* Row and Column spacing */
     .row-widget {
-        margin-bottom: 5px;
+        margin-bottom: 10px;
     }
     
     div[data-testid="column"] {
-        padding: 0 10px;
+        padding: 0 8px;
     }
     
-    /* Remove extra padding */
-    .main .block-container {
-        padding: 0 !important;
-        max-width: 100% !important;
+    /* Remove extra spacing from elements */
+    .element-container {
+        margin-bottom: 0 !important;
+    }
+    
+    .stMarkdown {
+        margin-bottom: 0 !important;
     }
     
     /* Custom scrollbar */
     ::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
     }
     
     ::-webkit-scrollbar-track {
@@ -221,9 +235,12 @@ custom_css = """
         border-radius: 10px;
     }
     
-    /* Hide all streamlit extra text */
-    .stMarkdown div:empty {
-        display: none;
+    /* Sidebar user info */
+    .sidebar-user {
+        margin-bottom: 20px;
+        padding: 10px;
+        background: rgba(78, 205, 196, 0.1);
+        border-radius: 10px;
     }
 </style>
 """
