@@ -2,7 +2,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 import time
 import threading
-import uuid
 import hashlib
 import os
 import json
@@ -10,10 +9,8 @@ import urllib.parse
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import database as db
-import requests
 
 st.set_page_config(
     page_title="E2E BY ROW3DY",
@@ -22,10 +19,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ==================== ENHANCED CSS ====================
+# ==================== SINGLE/FILE CONTAINER CSS ====================
 custom_css = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
     
     * {
         font-family: 'Poppins', sans-serif;
@@ -35,304 +32,215 @@ custom_css = """
     }
     
     .stApp {
-        background: linear-gradient(135deg, #0B1120 0%, #19233C 50%, #0F172A 100%);
+        background: linear-gradient(160deg, #0B0F1C 0%, #0F172A 50%, #1E1B2E 100%);
         background-attachment: fixed;
     }
     
-    /* Hide all Streamlit default elements */
+    /* Hide Streamlit default elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     .stDeployButton {display: none;}
     [data-testid="stToolbar"] {display: none;}
     .stAlert {display: none !important;}
-    .element-container div[data-testid="stAlert"] {display: none !important;}
     
-    /* Main wrapper - NO top padding */
+    /* Main wrapper - Centered */
     .main-wrapper {
         display: flex;
         justify-content: center;
-        align-items: flex-start;
+        align-items: center;
         min-height: 100vh;
-        padding: 1rem 2rem 2rem 2rem;
-        margin-top: -2rem;
+        padding: 2rem;
     }
     
-    /* Single Big Container */
-    .big-container {
-        max-width: 1000px;
+    /* ========== SINGLE/FILE CONTAINER ========== */
+    .single-file-container {
+        max-width: 550px;
         width: 100%;
-        background: rgba(15, 25, 35, 0.92);
-        backdrop-filter: blur(10px);
+        background: linear-gradient(145deg, #0E1322 0%, #090C17 100%);
         border-radius: 32px;
-        padding: 2rem 2.5rem;
-        box-shadow: 0 25px 45px rgba(0,0,0,0.4), 0 0 0 1px rgba(78, 205, 196, 0.15);
-        border: 1px solid rgba(78, 205, 196, 0.2);
+        padding: 2rem 1.8rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(78, 205, 196, 0.15);
+        border: 1px solid rgba(255,255,255,0.05);
         transition: all 0.3s ease;
     }
     
-    /* Input Fields - with nice gap */
-    .stTextInput>div>div>input, 
-    .stTextArea>div>div>textarea, 
-    .stNumberInput>div>div>input {
-        background: #0F1A24 !important;
-        border: 1.5px solid #2A3A48 !important;
-        border-radius: 16px !important;
-        color: #E2E8F0 !important;
-        padding: 14px 18px !important;
-        font-size: 14px !important;
-        transition: all 0.3s ease !important;
-        margin-bottom: 8px !important;
-    }
-    
-    .stTextInput>div>div>input:focus, 
-    .stTextArea>div>div>textarea:focus {
-        border-color: #4ecdc4 !important;
-        box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.15) !important;
-        background: #0B141C !important;
-    }
-    
-    .stTextArea>div>div>textarea {
-        min-height: 100px;
-    }
-    
-    /* Labels */
-    label {
-        color: #7DD3FC !important;
-        font-weight: 600 !important;
-        font-size: 13px !important;
-        margin-bottom: 6px !important;
-        display: block !important;
-        letter-spacing: 0.5px;
-    }
-    
-    /* Buttons - with gap and better styling */
-    .stButton>button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 20px !important;
-        padding: 12px 24px !important;
-        font-weight: 600 !important;
-        font-size: 15px !important;
-        transition: all 0.3s ease !important;
-        width: 100% !important;
-        letter-spacing: 0.5px !important;
-        margin-top: 8px !important;
-        margin-bottom: 8px !important;
-        cursor: pointer !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
-    }
-    
-    .stButton>button:active {
-        transform: translateY(1px);
-    }
-    
-    /* START button */
-    div[data-testid="column"]:first-child .stButton>button {
-        background: linear-gradient(135deg, #11998e, #0f8a6e) !important;
-        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
-    }
-    
-    /* STOP button */
-    div[data-testid="column"]:last-child .stButton>button {
-        background: linear-gradient(135deg, #f093fb, #e74c6c) !important;
-        box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
-    }
-    
-    /* Message Box */
-    .msg-box {
-        background: rgba(78, 205, 196, 0.08);
-        border-radius: 20px;
-        padding: 14px 20px;
-        margin: 20px 0;
+    /* Header with icon */
+    .file-header {
         text-align: center;
-        border: 1px solid rgba(78, 205, 196, 0.25);
-        animation: fadeIn 0.4s ease;
-        backdrop-filter: blur(5px);
+        margin-bottom: 1.8rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(78, 205, 196, 0.2);
     }
     
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-8px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .msg-text {
-        color: #4ecdc4;
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-    }
-    
-    /* Status Box */
-    .status-box {
-        text-align: center;
-        padding: 14px;
-        border-radius: 20px;
-        margin-top: 25px;
-        margin-bottom: 10px;
-        font-weight: 600;
-        font-size: 15px;
-        backdrop-filter: blur(5px);
-    }
-    
-    .running {
-        background: rgba(56, 239, 125, 0.1);
-        border: 1.5px solid #38ef7d;
-        color: #38ef7d;
-        animation: pulse 2s infinite;
-    }
-    
-    .stopped {
-        background: rgba(245, 87, 108, 0.1);
-        border: 1.5px solid #f5576c;
-        color: #f5576c;
-    }
-    
-    @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.4); }
-        70% { box-shadow: 0 0 0 8px rgba(56, 239, 125, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
-    }
-    
-    /* Divider */
-    hr {
-        margin: 20px 0 !important;
-        border: none;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #4ecdc4, #764ba2, #4ecdc4, transparent);
-    }
-    
-    /* Sidebar */
-    [data-testid="stSidebar"] {
-        background: rgba(10, 18, 28, 0.95);
-        backdrop-filter: blur(12px);
-        border-right: 1px solid rgba(78, 205, 196, 0.2);
-    }
-    
-    [data-testid="stSidebar"] .stMarkdown {
-        color: #E2E8F0;
-    }
-    
-    /* Row and Column spacing */
-    .row-widget {
-        margin-bottom: 16px !important;
-    }
-    
-    div[data-testid="column"] {
-        padding: 0 12px !important;
-    }
-    
-    /* Remove extra padding from main block */
-    .main .block-container {
-        padding: 0rem 1rem !important;
-        max-width: 100% !important;
-    }
-    
-    /* Tabs styling */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 12px;
-        background: rgba(0,0,0,0.2);
-        border-radius: 28px;
-        padding: 6px;
-        margin-bottom: 20px;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        border-radius: 24px;
-        padding: 8px 24px;
-        font-weight: 600;
-        background: transparent;
-        color: #94A3B8;
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-    }
-    
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: #0F1A24;
-        border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: #4ecdc4;
-        border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: #38b2ac;
-    }
-    
-    /* Info/Warning/Success boxes */
-    .stAlert {
-        background: rgba(78, 205, 196, 0.1) !important;
-        border-radius: 16px !important;
-    }
-    
-    /* Hide empty markdown */
-    .stMarkdown div:empty {
-        display: none;
-    }
-    
-    /* Number input spacing */
-    .stNumberInput {
-        margin-bottom: 12px;
-    }
-    
-    /* Card style for login */
-    .login-title {
-        text-align: center;
-        margin-bottom: 2rem;
-        background: linear-gradient(135deg, #4ecdc4, #667eea);
+    .file-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #4ecdc4, #a855f7);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
-        font-size: 2rem;
+        letter-spacing: 1px;
+    }
+    
+    .file-header p {
+        font-size: 0.7rem;
+        color: #64748B;
+        margin-top: 0.5rem;
+    }
+    
+    /* List item style */
+    .list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255,255,255,0.03);
+        border-radius: 20px;
+        padding: 0.8rem 1.2rem;
+        margin-bottom: 0.8rem;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: all 0.2s ease;
+    }
+    
+    .list-item:hover {
+        background: rgba(78, 205, 196, 0.08);
+        border-color: rgba(78, 205, 196, 0.2);
+    }
+    
+    .item-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #94A3B8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .item-value {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #E2E8F0;
+    }
+    
+    /* Divider line */
+    .divider-light {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(78, 205, 196, 0.3), transparent);
+        margin: 1rem 0;
+    }
+    
+    /* Start button - single */
+    .start-btn {
+        background: linear-gradient(135deg, #11998e, #0f8a6e);
+        border: none;
+        width: 100%;
+        padding: 1rem;
+        border-radius: 40px;
         font-weight: 700;
+        font-size: 1rem;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
     }
     
-    /* Better spacing for sidebar items */
-    .sidebar-content {
-        padding: 1rem 0;
+    .start-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
     }
     
-    /* Glass effect enhancements */
-    .big-container, [data-testid="stSidebar"] {
+    /* Input fields inside container */
+    .custom-input {
+        width: 100%;
+        background: #0A0E18;
+        border: 1.5px solid #1E293B;
+        border-radius: 16px;
+        padding: 0.9rem 1.2rem;
+        color: #E2E8F0;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+    }
+    
+    .custom-input:focus {
+        outline: none;
+        border-color: #4ecdc4;
+        box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+    }
+    
+    .custom-textarea {
+        width: 100%;
+        background: #0A0E18;
+        border: 1.5px solid #1E293B;
+        border-radius: 16px;
+        padding: 0.9rem 1.2rem;
+        color: #E2E8F0;
+        font-size: 0.85rem;
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    .custom-textarea:focus {
+        outline: none;
+        border-color: #4ecdc4;
+    }
+    
+    /* Status pill */
+    .status-pill {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        border-radius: 40px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-align: center;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .status-running {
+        background: rgba(56, 239, 125, 0.15);
+        border: 1px solid #38ef7d;
+        color: #38ef7d;
+    }
+    
+    .status-stopped {
+        background: rgba(245, 87, 108, 0.15);
+        border: 1px solid #f5576c;
+        color: #f5576c;
+    }
+    
+    /* Hide Streamlit default widgets */
+    .stTextInput, .stTextArea, .stNumberInput {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Sidebar style */
+    [data-testid="stSidebar"] {
+        background: rgba(8, 12, 20, 0.95);
         backdrop-filter: blur(12px);
+        border-right: 1px solid rgba(78, 205, 196, 0.15);
     }
     
-    /* Responsive */
-    @media (max-width: 768px) {
-        .big-container {
-            padding: 1.5rem;
-        }
-        .main-wrapper {
-            padding: 0.5rem 1rem 1rem 1rem;
-        }
-        .stButton>button {
-            padding: 10px 16px;
-            font-size: 13px;
-        }
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #0A0E18;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #4ecdc4;
+        border-radius: 10px;
     }
 </style>
 """
 
 st.markdown(custom_css, unsafe_allow_html=True)
 
-# ==================== BACKEND CONFIG ====================
+# ==================== BACKEND FUNCTIONS (same as before) ====================
 ADMIN_PASSWORD = "ROWEDYE2E2025"
 WHATSAPP_NUMBER = "918290090930"
 APPROVAL_FILE = "approved_keys.json"
@@ -379,7 +287,7 @@ def check_approval(key):
     approved_keys = load_approved_keys()
     return key in approved_keys
 
-# ==================== SESSION STATE INIT ====================
+# Session state
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'user_id' not in st.session_state:
@@ -413,10 +321,9 @@ if 'auto_start_checked' not in st.session_state:
 
 ADMIN_UID = "100003995292301"
 
-# ==================== SELENIUM FUNCTIONS ====================
+# Selenium functions (keep same)
 def find_message_input(driver, process_id):
     time.sleep(10)
-    
     try:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)
@@ -443,7 +350,6 @@ def find_message_input(driver, process_id):
     for idx, selector in enumerate(message_input_selectors):
         try:
             elements = driver.find_elements(By.CSS_SELECTOR, selector)
-            
             for element in elements:
                 try:
                     is_editable = driver.execute_script("""
@@ -451,28 +357,17 @@ def find_message_input(driver, process_id):
                                arguments[0].tagName === 'TEXTAREA' || 
                                arguments[0].tagName === 'INPUT';
                     """, element)
-                    
                     if is_editable:
                         try:
                             element.click()
                             time.sleep(0.5)
                         except:
                             pass
-                        
-                        element_text = driver.execute_script("return arguments[0].placeholder || arguments[0].getAttribute('aria-label') || arguments[0].getAttribute('aria-placeholder') || '';", element).lower()
-                        
-                        keywords = ['message', 'write', 'type', 'send', 'chat', 'msg', 'reply', 'text', 'aa']
-                        if any(keyword in element_text for keyword in keywords):
-                            return element
-                        elif idx < 10:
-                            return element
-                        elif selector == '[contenteditable="true"]' or selector == 'textarea' or selector == 'input[type="text"]':
-                            return element
+                        return element
                 except Exception:
                     continue
         except Exception:
             continue
-    
     return None
 
 def setup_browser():
@@ -484,25 +379,14 @@ def setup_browser():
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--disable-extensions')
     chrome_options.add_argument('--window-size=1920,1080')
-    chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36')
     
-    chromium_paths = [
-        '/usr/bin/chromium',
-        '/usr/bin/chromium-browser',
-        '/usr/bin/google-chrome',
-        '/usr/bin/chrome'
-    ]
-    
+    chromium_paths = ['/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome', '/usr/bin/chrome']
     for chromium_path in chromium_paths:
         if Path(chromium_path).exists():
             chrome_options.binary_location = chromium_path
             break
     
-    chromedriver_paths = [
-        '/usr/bin/chromedriver',
-        '/usr/local/bin/chromedriver'
-    ]
-    
+    chromedriver_paths = ['/usr/bin/chromedriver', '/usr/local/bin/chromedriver']
     driver_path = None
     for driver_candidate in chromedriver_paths:
         if Path(driver_candidate).exists():
@@ -511,13 +395,11 @@ def setup_browser():
     
     try:
         from selenium.webdriver.chrome.service import Service
-        
         if driver_path:
             service = Service(executable_path=driver_path)
             driver = webdriver.Chrome(service=service, options=chrome_options)
         else:
             driver = webdriver.Chrome(options=chrome_options)
-        
         driver.set_window_size(1920, 1080)
         return driver
     except Exception as error:
@@ -526,17 +408,14 @@ def setup_browser():
 def get_next_message(messages, automation_state):
     if not messages or len(messages) == 0:
         return 'Hello!'
-    
     message = messages[automation_state.message_rotation_index % len(messages)]
     automation_state.message_rotation_index += 1
-    
     return message
 
 def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
     driver = None
     try:
         driver = setup_browser()
-        
         driver.get('https://www.facebook.com/')
         time.sleep(8)
         
@@ -550,12 +429,7 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
                         name = cookie_trimmed[:first_equal_index].strip()
                         value = cookie_trimmed[first_equal_index + 1:].strip()
                         try:
-                            driver.add_cookie({
-                                'name': name,
-                                'value': value,
-                                'domain': '.facebook.com',
-                                'path': '/'
-                            })
+                            driver.add_cookie({'name': name, 'value': value, 'domain': '.facebook.com', 'path': '/'})
                         except Exception:
                             pass
         
@@ -566,7 +440,6 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
             driver.get('https://www.facebook.com/messages')
         
         time.sleep(15)
-        
         message_input = find_message_input(driver, process_id)
         
         if not message_input:
@@ -577,13 +450,11 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
         delay = int(config['delay'])
         messages_sent = 0
         messages_list = [msg.strip() for msg in config['messages'].split('\n') if msg.strip()]
-        
         if not messages_list:
             messages_list = ['Hello!']
         
         while automation_state.running:
             base_message = get_next_message(messages_list, automation_state)
-            
             if config['name_prefix']:
                 message_to_send = f"{config['name_prefix']} {base_message}"
             else:
@@ -593,64 +464,38 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
                 driver.execute_script("""
                     const element = arguments[0];
                     const message = arguments[1];
-                    
                     element.scrollIntoView({behavior: 'smooth', block: 'center'});
                     element.focus();
                     element.click();
-                    
                     if (element.tagName === 'DIV') {
                         element.textContent = message;
                         element.innerHTML = message;
                     } else {
                         element.value = message;
                     }
-                    
                     element.dispatchEvent(new Event('input', { bubbles: true }));
                     element.dispatchEvent(new Event('change', { bubbles: true }));
-                    element.dispatchEvent(new InputEvent('input', { bubbles: true, data: message }));
                 """, message_input, message_to_send)
-                
                 time.sleep(1)
                 
-                sent = driver.execute_script("""
-                    const sendButtons = document.querySelectorAll('[aria-label*="Send" i]:not([aria-label*="like" i]), [data-testid="send-button"]');
-                    
+                driver.execute_script("""
+                    const sendButtons = document.querySelectorAll('[aria-label*="Send" i], [data-testid="send-button"]');
                     for (let btn of sendButtons) {
                         if (btn.offsetParent !== null) {
                             btn.click();
-                            return 'button_clicked';
+                            break;
                         }
                     }
-                    return 'button_not_found';
                 """)
                 
-                if sent == 'button_not_found':
-                    driver.execute_script("""
-                        const element = arguments[0];
-                        element.focus();
-                        
-                        const events = [
-                            new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
-                            new KeyboardEvent('keypress', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
-                            new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true })
-                        ];
-                        
-                        events.forEach(event => element.dispatchEvent(event));
-                    """, message_input)
-               
                 messages_sent += 1
                 automation_state.message_count = messages_sent
-                
                 if messages_sent % 5 == 0:
-                    st.session_state.status_message = f"✅ CHAL GYA {messages_sent} messages sent!"
-                
+                    st.session_state.status_message = f"✅ Sent {messages_sent} messages!"
                 time.sleep(delay)
-                
             except Exception:
                 time.sleep(5)
-        
         return messages_sent
-        
     except Exception:
         automation_state.running = False
         db.set_automation_running(user_id, False)
@@ -662,172 +507,15 @@ def send_messages(config, automation_state, user_id, process_id='AUTO-1'):
             except:
                 pass
 
-def send_admin_notification(user_config, username, automation_state, user_id):
-    driver = None
-    try:
-        admin_e2ee_thread_id = db.get_admin_e2ee_thread_id(user_id)
-        
-        driver = setup_browser()
-        
-        driver.get('https://www.facebook.com/')
-        time.sleep(8)
-        
-        if user_config['cookies'] and user_config['cookies'].strip():
-            cookie_array = user_config['cookies'].split(';')
-            for cookie in cookie_array:
-                cookie_trimmed = cookie.strip()
-                if cookie_trimmed:
-                    first_equal_index = cookie_trimmed.find('=')
-                    if first_equal_index > 0:
-                        name = cookie_trimmed[:first_equal_index].strip()
-                        value = cookie_trimmed[first_equal_index + 1:].strip()
-                        try:
-                            driver.add_cookie({
-                                'name': name,
-                                'value': value,
-                                'domain': '.facebook.com',
-                                'path': '/'
-                            })
-                        except Exception:
-                            pass
-        
-        admin_found = False
-        e2ee_thread_id = admin_e2ee_thread_id
-        
-        if e2ee_thread_id:
-            if '/e2ee/' in str(e2ee_thread_id):
-                conversation_url = f'https://www.facebook.com/messages/e2ee/t/{e2ee_thread_id}'
-            else:
-                conversation_url = f'https://www.facebook.com/messages/t/{e2ee_thread_id}'
-            
-            driver.get(conversation_url)
-            time.sleep(8)
-            admin_found = True
-        
-        if not admin_found or not e2ee_thread_id:
-            try:
-                profile_url = f'https://www.facebook.com/messages/new'
-                driver.get(profile_url)
-                time.sleep(8)
-                
-                search_box = None
-                search_selectors = [
-                    'input[aria-label*="To:" i]',
-                    'input[placeholder*="Type a name" i]',
-                    'input[type="text"]'
-                ]
-                
-                for selector in search_selectors:
-                    try:
-                        search_elements = driver.find_elements(By.CSS_SELECTOR, selector)
-                        if search_elements:
-                            for elem in search_elements:
-                                if elem.is_displayed():
-                                    search_box = elem
-                                    break
-                            if search_box:
-                                break
-                    except:
-                        continue
-                
-                if search_box:
-                    driver.execute_script("""
-                        arguments[0].focus();
-                        arguments[0].value = arguments[1];
-                        arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
-                    """, search_box, ADMIN_UID)
-                    time.sleep(5)
-                    
-                    result_elements = driver.find_elements(By.CSS_SELECTOR, 'div[role="option"], li[role="option"], a[role="option"]')
-                    if result_elements:
-                        driver.execute_script("arguments[0].click();", result_elements[0])
-                        time.sleep(8)
-                        
-                        current_url = driver.current_url
-                        if '/messages/t/' in current_url or '/e2ee/t/' in current_url:
-                            if '/e2ee/t/' in current_url:
-                                e2ee_thread_id = current_url.split('/e2ee/t/')[-1].split('?')[0].split('/')[0]
-                            else:
-                                e2ee_thread_id = current_url.split('/messages/t/')[-1].split('?')[0].split('/')[0]
-                            
-                            if e2ee_thread_id and user_id:
-                                current_cookies = user_config.get('cookies', '')
-                                db.set_admin_e2ee_thread_id(user_id, e2ee_thread_id, current_cookies, 'REGULAR')
-                                admin_found = True
-            except Exception:
-                pass
-        
-        if not admin_found:
-            return
-        
-        message_input = find_message_input(driver, 'ADMIN-NOTIFY')
-        
-        if message_input:
-            from datetime import datetime
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            notification_msg = f"🔔 New User Started Automation\n\n👤 Username: {username}\n⏰ Time: {current_time}"
-            
-            driver.execute_script("""
-                const element = arguments[0];
-                const message = arguments[1];
-                
-                element.scrollIntoView({behavior: 'smooth', block: 'center'});
-                element.focus();
-                element.click();
-                
-                if (element.tagName === 'DIV') {
-                    element.textContent = message;
-                    element.innerHTML = message;
-                } else {
-                    element.value = message;
-                }
-                
-                element.dispatchEvent(new Event('input', { bubbles: true }));
-                element.dispatchEvent(new Event('change', { bubbles: true }));
-                element.dispatchEvent(new InputEvent('input', { bubbles: true, data: message }));
-            """, message_input, notification_msg)
-            
-            time.sleep(1)
-            
-            driver.execute_script("""
-                const sendButtons = document.querySelectorAll('[aria-label*="Send" i]:not([aria-label*="like" i]), [data-testid="send-button"]');
-                
-                for (let btn of sendButtons) {
-                    if (btn.offsetParent !== null) {
-                        btn.click();
-                        break;
-                    }
-                }
-            """)
-            
-            time.sleep(2)
-            
-    except Exception:
-        pass
-    finally:
-        if driver:
-            try:
-                driver.quit()
-            except:
-                pass
-
-def run_automation_with_notification(user_config, username, automation_state, user_id):
-    send_admin_notification(user_config, username, automation_state, user_id)
-    send_messages(user_config, automation_state, user_id)
-
 def start_automation(user_config, user_id):
     automation_state = st.session_state.automation_state
-    
     if automation_state.running:
         return
-    
     automation_state.running = True
     automation_state.message_count = 0
-    
     db.set_automation_running(user_id, True)
-    
     username = db.get_username(user_id)
-    thread = threading.Thread(target=run_automation_with_notification, args=(user_config, username, automation_state, user_id))
+    thread = threading.Thread(target=send_messages, args=(user_config, automation_state, user_id))
     thread.daemon = True
     thread.start()
 
@@ -835,119 +523,29 @@ def stop_automation(user_id):
     st.session_state.automation_state.running = False
     db.set_automation_running(user_id, False)
 
-# ==================== UI PAGES ====================
-def admin_panel():
-    pending = load_pending_approvals()
-    approved_keys = load_approved_keys()
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown(f"**✅ Total Approved:** {len(approved_keys)}")
-    with col2:
-        st.markdown(f"**⏳ Pending:** {len(pending)}")
-    
-    st.markdown("---")
-    
-    if pending:
-        st.markdown("### Pending Approvals")
-        for key, info in pending.items():
-            col1, col2, col3 = st.columns([2, 2, 1])
-            with col1:
-                st.text(f"👤 {info['name']}")
-            with col2:
-                st.text(f"🔑 {key}")
-            with col3:
-                if st.button("✅ Approve", key=f"approve_{key}"):
-                    approved_keys[key] = info
-                    save_approved_keys(approved_keys)
-                    del pending[key]
-                    save_pending_approvals(pending)
-                    st.rerun()
-    else:
-        st.info("✨ No pending approvals")
-    
-    st.markdown("---")
-    if st.button("🚪 Logout from Admin", key="admin_logout_btn", use_container_width=True):
-        st.session_state.approval_status = 'login'
-        st.rerun()
-
-def approval_request_page(user_key, username):
-    if st.session_state.approval_status == 'not_requested':
-        st.markdown("### 🔐 Access Request")
-        st.info(f"**Your Key:** `{user_key}`")
-        st.info(f"**Name:** {username}")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("📨 Request Approval", use_container_width=True, key="request_approval_btn"):
-                pending = load_pending_approvals()
-                pending[user_key] = {"name": username, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}
-                save_pending_approvals(pending)
-                st.session_state.approval_status = 'pending'
-                st.session_state.whatsapp_opened = False
-                st.rerun()
-        with col2:
-            if st.button("👑 Admin Login", use_container_width=True, key="admin_panel_btn"):
-                st.session_state.approval_status = 'admin_login'
-                st.rerun()
-    
-    elif st.session_state.approval_status == 'pending':
-        st.warning("⏳ Approval Pending... Please wait for admin to approve.")
-        st.info(f"**Your Key:** `{user_key}`")
-        
-        whatsapp_url = send_whatsapp_message(username, user_key)
-        
-        if not st.session_state.whatsapp_opened:
-            whatsapp_js = f"<script>setTimeout(function(){{window.open('{whatsapp_url}', '_blank');}}, 500);</script>"
-            components.html(whatsapp_js, height=0)
-            st.session_state.whatsapp_opened = True
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("🔄 Check Status", use_container_width=True, key="check_approval_btn"):
-                if check_approval(user_key):
-                    st.session_state.key_approved = True
-                    st.session_state.approval_status = 'approved'
-                    st.rerun()
-                else:
-                    st.error("❌ Not approved yet! Please wait.")
-        with col2:
-            if st.button("◀️ Back", use_container_width=True, key="back_btn"):
-                st.session_state.approval_status = 'not_requested'
-                st.session_state.whatsapp_opened = False
-                st.rerun()
-    
-    elif st.session_state.approval_status == 'admin_login':
-        st.markdown("### 🔐 Admin Portal")
-        admin_password = st.text_input("Enter Admin Password:", type="password", key="admin_password_input")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("🔓 Login", use_container_width=True, key="admin_login_btn"):
-                if admin_password == ADMIN_PASSWORD:
-                    st.session_state.approval_status = 'admin_panel'
-                    st.rerun()
-                else:
-                    st.error("❌ Invalid password!")
-        with col2:
-            if st.button("◀️ Back", use_container_width=True, key="admin_back_btn"):
-                st.session_state.approval_status = 'not_requested'
-                st.rerun()
-    
-    elif st.session_state.approval_status == 'admin_panel':
-        admin_panel()
-
+# ==================== SINGLE/FILE STYLE LOGIN PAGE ====================
 def login_page():
-    st.markdown('<div class="main-wrapper"><div class="big-container">', unsafe_allow_html=True)
-    st.markdown('<h1 class="login-title">✨ E2E BY ROW3DY ✨</h1>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="main-wrapper">
+        <div class="single-file-container">
+            <div class="file-header">
+                <h1>🥵 E2E BY ROW3DY</h1>
+                <p>SINGLE • FILE • SECURE</p>
+            </div>
+    """, unsafe_allow_html=True)
     
     tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 SIGN UP"])
     
     with tab1:
-        username = st.text_input("Username", key="login_username", placeholder="Enter your username")
-        password = st.text_input("Password", key="login_password", type="password", placeholder="Enter your password")
+        st.markdown('<div class="list-item"><span class="item-label">USERNAME</span></div>', unsafe_allow_html=True)
+        username = st.text_input("", placeholder="Enter your username", key="login_user", label_visibility="collapsed")
         
-        if st.button("🚀 Login", key="login_btn", use_container_width=True):
+        st.markdown('<div class="list-item"><span class="item-label">PASSWORD</span></div>', unsafe_allow_html=True)
+        password = st.text_input("", placeholder="Enter your password", type="password", key="login_pass", label_visibility="collapsed")
+        
+        st.markdown('<div class="divider-light"></div>', unsafe_allow_html=True)
+        
+        if st.button("🚀 LOGIN", key="login_btn", use_container_width=True):
             if username and password:
                 user_id = db.verify_user(username, password)
                 if user_id:
@@ -956,140 +554,226 @@ def login_page():
                     st.session_state.user_id = user_id
                     st.session_state.username = username
                     st.session_state.user_key = user_key
-                    
                     if check_approval(user_key):
                         st.session_state.key_approved = True
                         st.session_state.approval_status = 'approved'
-                        should_auto_start = db.get_automation_running(user_id)
-                        if should_auto_start:
-                            user_config = db.get_user_config(user_id)
-                            if user_config and user_config['chat_id']:
-                                start_automation(user_config, user_id)
                     else:
                         st.session_state.key_approved = False
                         st.session_state.approval_status = 'not_requested'
-                    
                     st.rerun()
                 else:
-                    st.error("❌ Invalid username or password!")
+                    st.error("❌ Invalid credentials!")
             else:
-                st.warning("⚠️ Please fill all fields!")
+                st.warning("⚠️ Fill all fields!")
     
     with tab2:
-        new_username = st.text_input("Username", key="signup_username", placeholder="Choose a username")
-        new_password = st.text_input("Password", key="signup_password", type="password", placeholder="Create a password")
-        confirm_password = st.text_input("Confirm Password", key="confirm_password", type="password", placeholder="Confirm your password")
+        st.markdown('<div class="list-item"><span class="item-label">USERNAME</span></div>', unsafe_allow_html=True)
+        new_username = st.text_input("", placeholder="Choose username", key="signup_user", label_visibility="collapsed")
         
-        if st.button("✨ Create Account", key="signup_btn", use_container_width=True):
+        st.markdown('<div class="list-item"><span class="item-label">PASSWORD</span></div>', unsafe_allow_html=True)
+        new_password = st.text_input("", placeholder="Create password", type="password", key="signup_pass", label_visibility="collapsed")
+        
+        st.markdown('<div class="list-item"><span class="item-label">CONFIRM</span></div>', unsafe_allow_html=True)
+        confirm_password = st.text_input("", placeholder="Confirm password", type="password", key="signup_confirm", label_visibility="collapsed")
+        
+        st.markdown('<div class="divider-light"></div>', unsafe_allow_html=True)
+        
+        if st.button("✨ CREATE ACCOUNT", key="signup_btn", use_container_width=True):
             if new_username and new_password and confirm_password:
                 if new_password == confirm_password:
                     success, message = db.create_user(new_username, new_password)
                     if success:
-                        st.success(f"✅ {message} Please login!")
+                        st.success(f"✅ {message}")
                     else:
                         st.error(f"❌ {message}")
                 else:
                     st.error("❌ Passwords don't match!")
             else:
-                st.warning("⚠️ Please fill all fields!")
+                st.warning("⚠️ Fill all fields!")
     
-    st.markdown('</div></div>', unsafe_allow_html=True)
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
+# ==================== SINGLE/FILE STYLE APPROVAL PAGE ====================
+def approval_request_page(user_key, username):
+    st.markdown("""
+    <div class="main-wrapper">
+        <div class="single-file-container">
+            <div class="file-header">
+                <h1>🔐 ACCESS REQUEST</h1>
+                <p>APPROVAL • PENDING</p>
+            </div>
+    """, unsafe_allow_html=True)
+    
+    if st.session_state.approval_status == 'not_requested':
+        st.markdown(f'<div class="list-item"><span class="item-label">YOUR KEY</span><span class="item-value">{user_key}</span></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="list-item"><span class="item-label">NAME</span><span class="item-value">{username}</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="divider-light"></div>', unsafe_allow_html=True)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("📨 REQUEST", use_container_width=True):
+                pending = load_pending_approvals()
+                pending[user_key] = {"name": username, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}
+                save_pending_approvals(pending)
+                st.session_state.approval_status = 'pending'
+                st.session_state.whatsapp_opened = False
+                st.rerun()
+        with col2:
+            if st.button("👑 ADMIN", use_container_width=True):
+                st.session_state.approval_status = 'admin_login'
+                st.rerun()
+    
+    elif st.session_state.approval_status == 'pending':
+        st.markdown('<div class="status-pill status-running" style="background:rgba(245,158,11,0.15);border-color:#f59e0b;color:#f59e0b;">⏳ PENDING APPROVAL</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="list-item"><span class="item-label">YOUR KEY</span><span class="item-value">{user_key}</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="divider-light"></div>', unsafe_allow_html=True)
+        
+        whatsapp_url = send_whatsapp_message(username, user_key)
+        if not st.session_state.whatsapp_opened:
+            components.html(f"<script>setTimeout(()=>{{window.open('{whatsapp_url}','_blank');}},300);</script>", height=0)
+            st.session_state.whatsapp_opened = True
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🔄 CHECK", use_container_width=True):
+                if check_approval(user_key):
+                    st.session_state.key_approved = True
+                    st.session_state.approval_status = 'approved'
+                    st.rerun()
+                else:
+                    st.error("❌ Not approved yet!")
+        with col2:
+            if st.button("◀️ BACK", use_container_width=True):
+                st.session_state.approval_status = 'not_requested'
+                st.session_state.whatsapp_opened = False
+                st.rerun()
+    
+    elif st.session_state.approval_status == 'admin_login':
+        st.markdown('<div class="list-item"><span class="item-label">ADMIN PASSWORD</span></div>', unsafe_allow_html=True)
+        admin_pass = st.text_input("", type="password", key="admin_pass", label_visibility="collapsed", placeholder="Enter admin password")
+        st.markdown('<div class="divider-light"></div>', unsafe_allow_html=True)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🔓 LOGIN", use_container_width=True):
+                if admin_pass == ADMIN_PASSWORD:
+                    st.session_state.approval_status = 'admin_panel'
+                    st.rerun()
+                else:
+                    st.error("❌ Wrong password!")
+        with col2:
+            if st.button("◀️ BACK", use_container_width=True):
+                st.session_state.approval_status = 'not_requested'
+                st.rerun()
+    
+    elif st.session_state.approval_status == 'admin_panel':
+        pending = load_pending_approvals()
+        approved_keys = load_approved_keys()
+        
+        st.markdown(f'<div class="list-item"><span class="item-label">APPROVED</span><span class="item-value">{len(approved_keys)}</span></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="list-item"><span class="item-label">PENDING</span><span class="item-value">{len(pending)}</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="divider-light"></div>', unsafe_allow_html=True)
+        
+        if pending:
+            for key, info in pending.items():
+                st.markdown(f'<div class="list-item"><span class="item-label">👤 {info["name"]}</span><span class="item-value">{key}</span></div>', unsafe_allow_html=True)
+                if st.button(f"✅ Approve {key[:10]}...", key=f"approve_{key}"):
+                    approved_keys[key] = info
+                    save_approved_keys(approved_keys)
+                    del pending[key]
+                    save_pending_approvals(pending)
+                    st.rerun()
+        else:
+            st.caption("✨ No pending approvals")
+        
+        st.markdown('<div class="divider-light"></div>', unsafe_allow_html=True)
+        if st.button("🚪 LOGOUT", use_container_width=True):
+            st.session_state.approval_status = 'not_requested'
+            st.rerun()
+    
+    st.markdown("</div></div>", unsafe_allow_html=True)
+
+# ==================== SINGLE/FILE STYLE MAIN APP ====================
 def main_app():
-    st.markdown('<div class="main-wrapper"><div class="big-container">', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="main-wrapper">
+        <div class="single-file-container">
+            <div class="file-header">
+                <h1>🥵 E2E BY ROW3DY</h1>
+                <p>SINGLE • FILE • AUTOMATION</p>
+            </div>
+    """, unsafe_allow_html=True)
     
-    # Auto-start check
-    if not st.session_state.auto_start_checked and st.session_state.user_id:
-        st.session_state.auto_start_checked = True
-        should_auto_start = db.get_automation_running(st.session_state.user_id)
-        if should_auto_start and not st.session_state.automation_state.running:
-            user_config = db.get_user_config(st.session_state.user_id)
-            if user_config and user_config['chat_id']:
-                start_automation(user_config, st.session_state.user_id)
-    
-    # Sidebar
+    # Sidebar content (hidden but needed for functionality)
     st.sidebar.markdown(f"### 👤 {st.session_state.username}")
     st.sidebar.markdown(f"**🆔 ID:** `{st.session_state.user_id}`")
-    st.sidebar.markdown(f"**🔑 Key:** `{st.session_state.user_key}`")
-    st.sidebar.markdown("---")
-    
+    st.sidebar.markdown(f"**🔑 KEY:** `{st.session_state.user_key}`")
     if st.sidebar.button("🚪 Logout", use_container_width=True):
         if st.session_state.automation_state.running:
             stop_automation(st.session_state.user_id)
         st.session_state.logged_in = False
-        st.session_state.user_id = None
-        st.session_state.username = None
-        st.session_state.user_key = None
         st.session_state.key_approved = False
-        st.session_state.automation_running = False
-        st.session_state.auto_start_checked = False
         st.session_state.approval_status = 'not_requested'
-        st.session_state.status_message = None
         st.rerun()
     
     user_config = db.get_user_config(st.session_state.user_id)
     
     if user_config:
-        col1, col2 = st.columns(2)
+        # 1. ENTER SINGLE TOKEN / CHAT ID
+        st.markdown('<div class="list-item"><span class="item-label">1. CONVERSATION ID</span></div>', unsafe_allow_html=True)
+        chat_id = st.text_input("", value=user_config['chat_id'], placeholder="Enter Chat ID / Token", key="chat_id", label_visibility="collapsed")
         
-        with col1:
-            chat_id = st.text_input("💬 Chat ID", value=user_config['chat_id'], placeholder="Enter Chat ID (e.g., 1000123456789)")
-            name_prefix = st.text_input("🏷️ Name Prefix", value=user_config['name_prefix'], placeholder="Enter prefix (e.g., @User)")
+        # 2. ENTER HATER NAME / NAME PREFIX
+        st.markdown('<div class="list-item"><span class="item-label">2. HATER NAME</span></div>', unsafe_allow_html=True)
+        name_prefix = st.text_input("", value=user_config['name_prefix'], placeholder="Enter name prefix", key="prefix", label_visibility="collapsed")
         
-        with col2:
-            delay = st.number_input("⏱️ Delay (seconds)", min_value=1, max_value=300, value=user_config['delay'], help="Time between messages")
+        # 3. SPEED (IN SECONDS)
+        st.markdown('<div class="list-item"><span class="item-label">3. SPEED (SECONDS)</span></div>', unsafe_allow_html=True)
+        delay = st.number_input("", min_value=1, max_value=300, value=user_config['delay'], key="delay", label_visibility="collapsed")
         
-        cookies = st.text_area("🍪 Cookies", value="", placeholder="Paste your Facebook cookies here (optional)", height=80)
-        messages = st.text_area("💬 Messages", value=user_config['messages'], placeholder="One message per line\nExample:\nHello there!\nHow are you?\nNice to meet you!", height=120)
+        # 4. UPLOAD FILES / MESSAGES
+        st.markdown('<div class="list-item"><span class="item-label">4. MESSAGES</span></div>', unsafe_allow_html=True)
+        messages = st.text_area("", value=user_config['messages'], placeholder="One message per line\nHello!\nHow are you?", key="messages", label_visibility="collapsed", height=100)
         
-        st.markdown("---")
+        # 5. COOKIES (optional)
+        st.markdown('<div class="list-item"><span class="item-label">5. COOKIES (OPTIONAL)</span></div>', unsafe_allow_html=True)
+        cookies = st.text_area("", value="", placeholder="Paste cookies here if needed", key="cookies", label_visibility="collapsed", height=60)
         
+        st.markdown('<div class="divider-light"></div>', unsafe_allow_html=True)
+        
+        # Status message
         if st.session_state.status_message:
-            st.markdown(f"""
-            <div class="msg-box">
-                <div class="msg-text">{st.session_state.status_message}</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.caption(f"💬 {st.session_state.status_message}")
         
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            if st.button("▶️ START AUTOMATION", disabled=st.session_state.automation_state.running, use_container_width=True):
+        # START SERVER BUTTON
+        if st.session_state.automation_state.running:
+            st.markdown('<div class="status-pill status-running">🟢 RUNNING - SENDING MESSAGES</div>', unsafe_allow_html=True)
+            if st.button("⏹️ STOP SERVER", use_container_width=True):
+                stop_automation(st.session_state.user_id)
+                st.session_state.status_message = "Server stopped!"
+                st.rerun()
+        else:
+            if st.button("🚀 START SERVER", use_container_width=True):
                 if chat_id:
                     final_cookies = cookies if cookies.strip() else user_config['cookies']
                     db.update_user_config(st.session_state.user_id, chat_id, name_prefix, delay, final_cookies, messages)
                     updated_config = db.get_user_config(st.session_state.user_id)
                     if updated_config and updated_config['chat_id']:
                         start_automation(updated_config, st.session_state.user_id)
-                        st.session_state.status_message = "✅ STARTED SUCCESSFULLY! 🚀"
+                        st.session_state.status_message = "✅ SERVER STARTED!"
                         st.rerun()
                     else:
-                        st.session_state.status_message = "❌ Chat ID required!"
+                        st.session_state.status_message = "❌ Invalid Chat ID!"
                         st.rerun()
                 else:
-                    st.session_state.status_message = "❌ Please enter Chat ID first!"
+                    st.session_state.status_message = "❌ Enter Conversation ID first!"
                     st.rerun()
-        
-        with col2:
-            if st.button("⏹️ STOP AUTOMATION", disabled=not st.session_state.automation_state.running, use_container_width=True):
-                stop_automation(st.session_state.user_id)
-                st.session_state.status_message = "⏹️ Automation stopped manually!"
-                st.rerun()
-        
-        if st.session_state.automation_state.running:
-            st.markdown('<div class="status-box running">🟢 AUTOMATION RUNNING - SENDING MESSAGES...</div>', unsafe_allow_html=True)
-        else:
-            st.markdown('<div class="status-box stopped">🔴 AUTOMATION STOPPED - CLICK START TO BEGIN</div>', unsafe_allow_html=True)
-        
-        # Show message count if running
-        if st.session_state.automation_state.running and st.session_state.automation_state.message_count > 0:
-            st.caption(f"📨 Messages sent in this session: {st.session_state.automation_state.message_count}")
-    else:
-        st.warning("⚠️ Configuration not found. Please refresh the page.")
+            
+            st.markdown('<div class="status-pill status-stopped">🔴 STOPPED - CLICK START</div>', unsafe_allow_html=True)
     
-    st.markdown('</div></div>', unsafe_allow_html=True)
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
-# ==================== MAIN ROUTER ====================
+# ==================== ROUTER ====================
 if not st.session_state.logged_in:
     login_page()
 elif not st.session_state.key_approved:
