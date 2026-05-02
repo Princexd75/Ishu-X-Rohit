@@ -38,38 +38,90 @@ custom_css = """
         background-attachment: fixed;
     }
     
-    /* Main Container - Dark Blue */
-    .main-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    
-    .dark-blue-container {
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        border-radius: 25px;
-        padding: 30px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        border: 1px solid rgba(78, 205, 196, 0.3);
-    }
-    
     /* Hide Streamlit Branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
+    /* Main Container */
+    .main-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .unified-container {
+        max-width: 900px;
+        width: 100%;
+        background: linear-gradient(135deg, rgba(15, 32, 39, 0.95), rgba(32, 58, 67, 0.95));
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        border: 1px solid rgba(78, 205, 196, 0.3);
+    }
+    
+    /* Input Fields - Same Size */
+    .stTextInput, .stTextArea, .stNumberInput {
+        margin-bottom: 15px;
+    }
+    
+    .stTextInput>div>div>input, 
+    .stTextArea>div>div>textarea, 
+    .stNumberInput>div>div>input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(78, 205, 196, 0.3);
+        border-radius: 12px;
+        color: white;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        width: 100%;
+        min-height: 45px;
+    }
+    
+    .stTextArea>div>div>textarea {
+        min-height: 80px;
+    }
+    
+    .stTextInput>div>div>input:focus, 
+    .stTextArea>div>div>textarea:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #4ecdc4;
+        box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+        color: white;
+    }
+    
+    /* Labels */
+    label {
+        color: #4ecdc4 !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
+        margin-bottom: 5px !important;
+        display: block !important;
+    }
+    
+    /* Buttons - Same Size */
+    .stButton {
+        width: 100%;
+        margin-bottom: 0;
+    }
+    
     .stButton>button {
         background: linear-gradient(45deg, #FF416C, #FF4B2B);
         color: white;
         border: none;
-        border-radius: 50px;
-        padding: 12px 28px;
+        border-radius: 12px;
+        padding: 12px 20px;
         font-weight: 700;
-        font-size: 16px;
+        font-size: 15px;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
         width: 100%;
         letter-spacing: 1px;
+        min-height: 48px;
     }
     
     .stButton>button:hover {
@@ -87,7 +139,7 @@ custom_css = """
         transform: none;
     }
     
-    /* Start Button Special Style */
+    /* Start Button */
     div[data-testid="column"]:first-child .stButton>button {
         background: linear-gradient(45deg, #11998e, #38ef7d);
         box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
@@ -97,7 +149,7 @@ custom_css = """
         box-shadow: 0 6px 25px rgba(56, 239, 125, 0.5);
     }
     
-    /* Stop Button Special Style */
+    /* Stop Button */
     div[data-testid="column"]:last-child .stButton>button {
         background: linear-gradient(45deg, #eb3349, #f45c43);
         box-shadow: 0 4px 15px rgba(235, 51, 73, 0.3);
@@ -107,62 +159,32 @@ custom_css = """
         box-shadow: 0 6px 25px rgba(235, 51, 73, 0.5);
     }
     
-    /* Input Fields */
-    .stTextInput>div>div>input, 
-    .stTextArea>div>div>textarea, 
-    .stNumberInput>div>div>input {
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(78, 205, 196, 0.3);
-        border-radius: 15px;
-        color: white;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
-        font-size: 14px;
-    }
-    
-    .stTextInput>div>div>input:focus, 
-    .stTextArea>div>div>textarea:focus {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: #4ecdc4;
-        box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
-        color: white;
-    }
-    
-    .stTextInput>div>div>input::placeholder,
-    .stTextArea>div>div>textarea::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-    }
-    
-    /* Labels */
-    label {
-        color: #4ecdc4 !important;
-        font-weight: 600 !important;
-        font-size: 14px !important;
-        margin-bottom: 8px !important;
-        display: block !important;
-    }
-    
     /* Headers */
-    .main-header {
+    .app-title {
         text-align: center;
         margin-bottom: 30px;
     }
     
-    .main-header h1 {
+    .app-title h1 {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        font-size: 42px;
+        font-size: 40px;
         font-weight: 800;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
+    }
+    
+    .app-title p {
+        color: rgba(255,255,255,0.7);
+        font-size: 14px;
     }
     
     .section-title {
         color: #4ecdc4;
-        font-size: 24px;
+        font-size: 18px;
         font-weight: 700;
-        margin: 25px 0 20px 0;
+        margin: 20px 0 15px 0;
         text-align: center;
         letter-spacing: 1px;
     }
@@ -170,9 +192,9 @@ custom_css = """
     /* Message Box */
     .message-box {
         background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(255, 107, 107, 0.2));
-        border-left: 5px solid #4ecdc4;
-        border-radius: 15px;
-        padding: 20px;
+        border-left: 4px solid #4ecdc4;
+        border-radius: 12px;
+        padding: 15px;
         margin: 20px 0;
         text-align: center;
         backdrop-filter: blur(10px);
@@ -181,7 +203,7 @@ custom_css = """
     
     @keyframes slideIn {
         from {
-            transform: translateY(-30px);
+            transform: translateY(-20px);
             opacity: 0;
         }
         to {
@@ -192,7 +214,7 @@ custom_css = """
     
     .success-msg {
         color: #38ef7d;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
         margin: 5px 0;
         text-shadow: 0 0 10px rgba(56, 239, 125, 0.5);
@@ -201,12 +223,12 @@ custom_css = """
     /* Status Box */
     .status-box {
         text-align: center;
-        padding: 18px;
-        border-radius: 15px;
-        margin-top: 30px;
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 20px;
         font-weight: 700;
-        font-size: 18px;
-        letter-spacing: 1px;
+        font-size: 16px;
+        letter-spacing: 0.5px;
     }
     
     .status-running {
@@ -227,7 +249,7 @@ custom_css = """
             box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.7);
         }
         70% {
-            box-shadow: 0 0 0 15px rgba(56, 239, 125, 0);
+            box-shadow: 0 0 0 10px rgba(56, 239, 125, 0);
         }
         100% {
             box-shadow: 0 0 0 0 rgba(56, 239, 125, 0);
@@ -244,9 +266,15 @@ custom_css = """
         color: white;
     }
     
-    /* Hide success tick marks */
-    .stAlert {
-        display: none;
+    /* Hide all success/error boxes */
+    .stAlert, .element-container div[data-testid="stAlert"] {
+        display: none !important;
+    }
+    
+    /* Hide block containers */
+    .block-container {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
     }
     
     /* Custom scrollbar */
@@ -271,23 +299,31 @@ custom_css = """
     
     /* Divider */
     hr {
-        margin: 25px 0;
+        margin: 20px 0;
         border: none;
-        height: 2px;
+        height: 1px;
         background: linear-gradient(90deg, transparent, #4ecdc4, transparent);
     }
     
-    /* Expander */
-    .streamlit-expanderHeader {
-        background: rgba(78, 205, 196, 0.1);
-        border-radius: 10px;
-        color: white;
+    /* Row gaps */
+    .row-widget {
+        margin-bottom: 0;
     }
     
-    /* Info/Warning boxes */
-    .stAlert {
-        background: rgba(0,0,0,0.5) !important;
-        border: 1px solid #4ecdc4 !important;
+    /* Column gaps */
+    div[data-testid="column"] {
+        padding: 0 8px;
+    }
+    
+    /* Remove extra spacing */
+    .element-container {
+        margin-bottom: 0;
+    }
+    
+    /* Main block container adjustments */
+    .main .block-container {
+        padding: 0 !important;
+        max-width: 100% !important;
     }
 </style>
 """
@@ -797,7 +833,7 @@ def stop_automation(user_id):
 
 def admin_panel():
     st.markdown("""
-    <div class="main-header">
+    <div class="app-title">
         <h1>🔐 ADMIN PANEL</h1>
     </div>
     """, unsafe_allow_html=True)
@@ -837,7 +873,7 @@ def admin_panel():
 
 def approval_request_page(user_key, username):
     st.markdown("""
-    <div class="main-header">
+    <div class="app-title">
         <h1>💎 KEY APPROVAL REQUIRED</h1>
     </div>
     """, unsafe_allow_html=True)
@@ -934,7 +970,7 @@ def approval_request_page(user_key, username):
 
 def login_page():
     st.markdown("""
-    <div class="main-header">
+    <div class="app-title">
         <h1>🔐 LOGIN SYSTEM</h1>
     </div>
     """, unsafe_allow_html=True)
@@ -996,9 +1032,15 @@ def login_page():
                 st.warning("⚠️ Please fill all fields")
 
 def main_app():
+    # Main wrapper with unified container
+    st.markdown('<div class="main-wrapper"><div class="unified-container">', unsafe_allow_html=True)
+    
+    # Title
     st.markdown("""
-    <div class="main-container">
-        <div class="dark-blue-container">
+    <div class="app-title">
+        <h1>🚀 E2E AUTOMATION</h1>
+        <p>Message Automation System</p>
+    </div>
     """, unsafe_allow_html=True)
     
     if not st.session_state.auto_start_checked and st.session_state.user_id:
@@ -1032,30 +1074,19 @@ def main_app():
     
     if user_config:
         # Configuration Section
-        st.markdown('<div class="section-title">⚙️ CONFIGURATION SETTINGS</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">⚙️ CONFIGURATION</div>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
         with col1:
-            chat_id = st.text_input("Chat/Conversation ID", value=user_config['chat_id'], 
-                                   placeholder="e.g., 1362400298935018")
-            
-            name_prefix = st.text_input("Name Prefix", value=user_config['name_prefix'],
-                                       placeholder="e.g., [E2E]")
+            chat_id = st.text_input("Chat ID", value=user_config['chat_id'], placeholder="Enter Chat ID")
+            name_prefix = st.text_input("Name Prefix", value=user_config['name_prefix'], placeholder="Enter prefix")
         
         with col2:
-            delay = st.number_input("Delay (seconds)", min_value=1, max_value=300, 
-                                   value=user_config['delay'])
+            delay = st.number_input("Delay (seconds)", min_value=1, max_value=300, value=user_config['delay'])
         
-        cookies = st.text_area("Facebook Cookies (optional)", 
-                              value="",
-                              placeholder="Paste your Facebook cookies here",
-                              height=80)
-        
-        messages = st.text_area("Messages (one per line)", 
-                               value=user_config['messages'],
-                               placeholder="Enter each message on a new line",
-                               height=120)
+        cookies = st.text_area("Cookies", value="", placeholder="Paste your Facebook cookies here", height=80)
+        messages = st.text_area("Messages", value=user_config['messages'], placeholder="Enter each message on a new line", height=100)
         
         st.markdown("---")
         
@@ -1067,18 +1098,17 @@ def main_app():
             </div>
             """, unsafe_allow_html=True)
         
-        # Automation Control Section
-        st.markdown('<div class="section-title">🎮 CONTROL PANEL</div>', unsafe_allow_html=True)
+        # Control Section
+        st.markdown('<div class="section-title">🎮 CONTROL</div>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
         with col1:
-            if st.button("▶️ START AUTOMATION", 
+            if st.button("▶️ START", 
                         disabled=st.session_state.automation_state.running, 
                         use_container_width=True,
                         key="start_btn"):
                 if chat_id:
-                    # Save configuration first
                     final_cookies = cookies if cookies.strip() else user_config['cookies']
                     db.update_user_config(
                         st.session_state.user_id,
@@ -1089,45 +1119,44 @@ def main_app():
                         messages
                     )
                     
-                    # Get updated config and start
                     updated_config = db.get_user_config(st.session_state.user_id)
                     if updated_config and updated_config['chat_id']:
                         start_automation(updated_config, st.session_state.user_id)
-                        st.session_state.status_message = "✅ START HOGYA BHAI! 🚀 Automation is running..."
+                        st.session_state.status_message = "✅ START HOGYA BHAI! 🚀"
                         st.rerun()
                     else:
-                        st.session_state.status_message = "❌ Chat ID is required!"
+                        st.session_state.status_message = "❌ Chat ID required!"
                         st.rerun()
                 else:
-                    st.session_state.status_message = "❌ Please enter Chat ID first!"
+                    st.session_state.status_message = "❌ Enter Chat ID first!"
                     st.rerun()
         
         with col2:
-            if st.button("⏹️ STOP AUTOMATION", 
+            if st.button("⏹️ STOP", 
                         disabled=not st.session_state.automation_state.running, 
                         use_container_width=True,
                         key="stop_btn"):
                 stop_automation(st.session_state.user_id)
-                st.session_state.status_message = "⏹️ Automation stopped successfully!"
+                st.session_state.status_message = "⏹️ Automation stopped!"
                 st.rerun()
         
         # Status indicator
         if st.session_state.automation_state.running:
             st.markdown("""
             <div class="status-box status-running">
-                🟢 AUTOMATION IS RUNNING - MESSAGES BEING SENT...
+                🟢 RUNNING - SENDING MESSAGES...
             </div>
             """, unsafe_allow_html=True)
         else:
             st.markdown("""
             <div class="status-box status-stopped">
-                🔴 AUTOMATION IS STOPPED - CLICK START TO BEGIN
+                🔴 STOPPED - CLICK START TO BEGIN
             </div>
             """, unsafe_allow_html=True)
     else:
-        st.warning("⚠️ No configuration found. Please refresh the page!")
+        st.warning("⚠️ No configuration found. Please refresh!")
     
-    st.markdown("</div></div>", unsafe_allow_html=True)
+    st.markdown('</div></div>', unsafe_allow_html=True)
 
 if not st.session_state.logged_in:
     login_page()
