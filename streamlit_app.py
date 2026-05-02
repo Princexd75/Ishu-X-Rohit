@@ -24,7 +24,7 @@ st.set_page_config(
 
 custom_css = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
     
     * {
         font-family: 'Poppins', sans-serif;
@@ -34,7 +34,7 @@ custom_css = """
     }
     
     .stApp {
-        background: #0a2f1f;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         background-attachment: fixed;
     }
     
@@ -62,133 +62,139 @@ custom_css = """
         min-height: auto;
     }
     
-    /* Single Big Container - top aligned */
+    /* Single Big Container */
     .big-container {
         max-width: 1000px;
         width: 100%;
-        background: #0d3b26;
-        border-radius: 30px;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        border-radius: 50px;
         padding: 40px;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        border: 1px solid #1a5a3a;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.2);
         margin: 0;
     }
     
-    /* Input Fields */
+    /* Input Fields - More Rounded */
     .stTextInput>div>div>input, 
     .stTextArea>div>div>textarea, 
     .stNumberInput>div>div>input {
-        background: #0a2a1a !important;
-        border: 2px solid #1a5a3a !important;
-        border-radius: 15px !important;
-        color: white !important;
-        padding: 12px 18px !important;
+        background: rgba(255,255,255,0.95) !important;
+        border: 2px solid #ff6b6b !important;
+        border-radius: 50px !important;
+        color: #333 !important;
+        padding: 15px 20px !important;
         font-size: 14px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
     }
     
     .stTextInput>div>div>input:focus, 
     .stTextArea>div>div>textarea:focus {
-        border-color: #2a8a5a !important;
-        box-shadow: 0 0 0 3px rgba(42, 138, 90, 0.2) !important;
-        background: #0a2a1a !important;
+        border-color: #ffd93d !important;
+        box-shadow: 0 0 0 5px rgba(255,107,107,0.3) !important;
+        background: white !important;
+        transform: scale(1.02);
     }
     
     .stTextArea>div>div>textarea {
         min-height: 100px;
+        border-radius: 25px !important;
     }
     
     /* Labels */
     label {
-        color: #4a9a6a !important;
-        font-weight: 600 !important;
-        font-size: 13px !important;
-        margin-bottom: 8px !important;
+        color: #ffd93d !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        margin-bottom: 10px !important;
         display: block !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     
     /* Buttons */
     .stButton>button {
-        background: #1a5a3a !important;
+        background: linear-gradient(135deg, #ff6b6b, #ff8e53) !important;
         color: white !important;
         border: none !important;
-        border-radius: 15px !important;
-        padding: 14px !important;
-        font-weight: 700 !important;
+        border-radius: 50px !important;
+        padding: 15px !important;
+        font-weight: 800 !important;
         font-size: 16px !important;
         width: 100% !important;
-        letter-spacing: 1px !important;
+        letter-spacing: 2px !important;
+        transition: all 0.3s ease !important;
+        text-transform: uppercase;
+        box-shadow: 0 5px 15px rgba(255,107,107,0.4);
     }
     
     .stButton>button:hover {
-        background: #2a7a4a !important;
-    }
-    
-    div[data-testid="column"]:first-child .stButton>button {
-        background: #1a5a3a !important;
-    }
-    
-    div[data-testid="column"]:first-child .stButton>button:hover {
-        background: #2a7a4a !important;
-    }
-    
-    div[data-testid="column"]:last-child .stButton>button {
-        background: #1a5a3a !important;
-    }
-    
-    div[data-testid="column"]:last-child .stButton>button:hover {
-        background: #2a7a4a !important;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255,107,107,0.6);
+        background: linear-gradient(135deg, #ff8e53, #ff6b6b) !important;
     }
     
     /* Message Box */
     .msg-box {
-        background: #0a2a1a;
-        border-radius: 15px;
+        background: rgba(255,255,255,0.95);
+        border-radius: 30px;
         padding: 15px;
         margin: 20px 0;
         text-align: center;
-        border: 1px solid #2a8a5a;
+        border: 2px solid #ffd93d;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
     .msg-text {
-        color: #4a9a6a;
+        color: #ff6b6b;
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 700;
     }
     
     /* Status Box */
     .status-box {
         text-align: center;
         padding: 15px;
-        border-radius: 15px;
+        border-radius: 50px;
         margin-top: 25px;
-        font-weight: 700;
+        font-weight: 800;
         font-size: 16px;
     }
     
     .running {
-        background: #0a2a1a;
-        border: 2px solid #2a8a5a;
-        color: #4a9a6a;
+        background: rgba(255,255,255,0.95);
+        border: 2px solid #00ff88;
+        color: #00cc66;
+        box-shadow: 0 0 20px rgba(0,255,136,0.3);
     }
     
     .stopped {
-        background: #1a1a1a;
-        border: 2px solid #8a2a2a;
-        color: #aa4a4a;
+        background: rgba(255,255,255,0.95);
+        border: 2px solid #ff6b6b;
+        color: #ff6b6b;
     }
     
     /* Divider */
     hr {
         margin: 25px 0;
         border: none;
-        height: 1px;
-        background: #1a5a3a;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ffd93d, transparent);
     }
     
     /* Sidebar */
     [data-testid="stSidebar"] {
-        background: #0d3b26;
-        border-right: 1px solid #1a5a3a;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        border-right: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    [data-testid="stSidebar"] .stMarkdown {
+        color: white !important;
     }
     
     /* Row and Column spacing */
@@ -202,15 +208,15 @@ custom_css = """
     
     /* Custom scrollbar */
     ::-webkit-scrollbar {
-        width: 8px;
+        width: 10px;
     }
     
     ::-webkit-scrollbar-track {
-        background: #0a2a1a;
+        background: #1e3c72;
     }
     
     ::-webkit-scrollbar-thumb {
-        background: #2a8a5a;
+        background: #ff6b6b;
         border-radius: 10px;
     }
     
@@ -219,65 +225,98 @@ custom_css = """
         display: none;
     }
     
-    /* Remove animations */
-    .stButton>button, .status-box, .msg-box {
-        transition: none !important;
-    }
-    
     /* Tabs styling */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background-color: #0a2a1a;
-        border-radius: 15px;
-        padding: 8px;
+        gap: 10px;
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 50px;
+        padding: 5px;
     }
     
     .stTabs [data-baseweb="tab"] {
-        border-radius: 12px;
-        padding: 8px 16px;
-        background-color: #1a5a3a;
+        border-radius: 40px;
+        padding: 10px 20px;
+        background-color: transparent;
         color: white;
+        font-weight: 600;
     }
     
     .stTabs [aria-selected="true"] {
-        background-color: #2a8a5a;
+        background-color: #ff6b6b;
+        color: white;
     }
     
     /* Info/Warning/Success boxes */
     .stAlert {
-        background-color: #0a2a1a !important;
-        border-color: #2a8a5a !important;
-        color: #4a9a6a !important;
+        background-color: rgba(255,255,255,0.95) !important;
+        border-radius: 30px !important;
+        border-left: 5px solid #ff6b6b !important;
+        color: #333 !important;
     }
     
     /* Number input */
     .stNumberInput input {
-        color: white !important;
+        color: #333 !important;
     }
     
-    /* Remove empty space from top of app */
-    section.main > div {
-        padding-top: 0 !important;
+    /* Header Title */
+    .hero-title {
+        text-align: center;
+        font-size: 48px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        letter-spacing: 2px;
     }
     
-    /* Ensure content starts from top */
-    .stApp > header {
-        display: none;
+    .hero-subtitle {
+        text-align: center;
+        font-size: 20px;
+        color: #ffd93d;
+        margin-bottom: 40px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 3px;
     }
     
-    .stApp > div {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
+    /* Login Page Specific */
+    .login-container {
+        text-align: center;
     }
     
-    /* Remove extra spacing from columns */
-    .row-widget.stHorizontal {
-        margin-top: 0 !important;
+    .create-account {
+        text-align: center;
+        margin-top: 20px;
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
     
-    /* Compact sidebar spacing */
-    [data-testid="stSidebar"] > div:first-child {
-        padding-top: 20px !important;
+    .create-account:hover {
+        color: #ffd93d;
+        transform: scale(1.05);
+    }
+    
+    /* Cookies box on top */
+    .order-top {
+        order: -1;
+    }
+    
+    /* Success message */
+    .success-message {
+        background: rgba(0,255,136,0.2);
+        border: 2px solid #00ff88;
+        border-radius: 50px;
+        padding: 10px;
+        text-align: center;
+        color: #00ff88;
+        font-weight: bold;
+        margin: 10px 0;
+        animation: fadeIn 0.5s ease;
     }
 </style>
 """
@@ -288,6 +327,12 @@ ADMIN_PASSWORD = "ROWEDYE2E2025"
 WHATSAPP_NUMBER = "918290090930"
 APPROVAL_FILE = "approved_keys.json"
 PENDING_FILE = "pending_approvals.json"
+
+# Session state for login success message
+if 'login_success' not in st.session_state:
+    st.session_state.login_success = False
+if 'show_signup' not in st.session_state:
+    st.session_state.show_signup = False
 
 def generate_user_key(username, password):
     combined = f"{username}:{password}"
@@ -882,16 +927,19 @@ def approval_request_page(user_key, username):
         admin_panel()
 
 def login_page():
-    # Use a container without wrapper for login
     st.markdown('<div class="main-wrapper"><div class="big-container">', unsafe_allow_html=True)
     
-    tab1, tab2 = st.tabs(["Login", "Sign Up"])
+    # Hero Section
+    st.markdown('<div class="hero-title">🔥 UNSTOPPABLE ZAINU XD 🧡</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-subtitle">✨ AUTOMATE YOUR SUCCESS ✨</div>', unsafe_allow_html=True)
     
-    with tab1:
-        username = st.text_input("Username", key="login_username")
-        password = st.text_input("Password", key="login_password", type="password")
+    # Check if we need to show signup form
+    if not st.session_state.show_signup:
+        # Login Form
+        username = st.text_input("👤 USERNAME", key="login_username", placeholder="Enter your username")
+        password = st.text_input("🔒 PASSWORD", key="login_password", type="password", placeholder="Enter your password")
         
-        if st.button("Login", key="login_btn", use_container_width=True):
+        if st.button("🚀 LOGIN", key="login_btn", use_container_width=True):
             if username and password:
                 user_id = db.verify_user(username, password)
                 if user_id:
@@ -900,6 +948,7 @@ def login_page():
                     st.session_state.user_id = user_id
                     st.session_state.username = username
                     st.session_state.user_key = user_key
+                    st.session_state.login_success = True
                     
                     if check_approval(user_key):
                         st.session_state.key_approved = True
@@ -915,27 +964,69 @@ def login_page():
                     
                     st.rerun()
                 else:
-                    st.error("Invalid credentials!")
+                    st.error("❌ Invalid credentials! Please try again.")
             else:
-                st.warning("Fill all fields!")
-    
-    with tab2:
-        new_username = st.text_input("Username", key="signup_username")
-        new_password = st.text_input("Password", key="signup_password", type="password")
-        confirm_password = st.text_input("Confirm", key="confirm_password", type="password")
+                st.warning("⚠️ Please fill all fields!")
         
-        if st.button("Create", key="signup_btn", use_container_width=True):
-            if new_username and new_password and confirm_password:
-                if new_password == confirm_password:
-                    success, message = db.create_user(new_username, new_password)
-                    if success:
-                        st.success(f"{message} Please login!")
+        # Success message if login was successful
+        if st.session_state.login_success:
+            st.markdown('<div class="success-message">✅ SUCCESSFUL LOGIN! Redirecting...</div>', unsafe_allow_html=True)
+            st.session_state.login_success = False
+        
+        # Create Account Option
+        st.markdown('<div class="create-account" onclick="alert(\'test\')">🔰 CREATE NEW ACCOUNT 🔰</div>', unsafe_allow_html=True)
+        
+        # JavaScript for create account click
+        components.html("""
+            <script>
+            const createAccount = document.querySelector('.create-account');
+            if (createAccount) {
+                createAccount.style.cursor = 'pointer';
+                createAccount.onclick = function() {
+                    const streamlitEvent = new CustomEvent('streamlit:setComponentValue', {
+                        detail: { value: 'signup' }
+                    });
+                    window.dispatchEvent(streamlitEvent);
+                }
+            }
+            </script>
+        """, height=0)
+        
+        # Signup button click handling via query params
+        if st.button("📝 CREATE NEW ACCOUNT", key="show_signup_btn", use_container_width=True):
+            st.session_state.show_signup = True
+            st.rerun()
+    
+    else:
+        # Sign Up Form
+        st.markdown('<h3 style="text-align:center; color:#ffd93d;">📝 CREATE NEW ACCOUNT</h3>', unsafe_allow_html=True)
+        
+        new_username = st.text_input("👤 USERNAME", key="signup_username", placeholder="Choose a username")
+        new_password = st.text_input("🔒 PASSWORD", key="signup_password", type="password", placeholder="Choose a password")
+        confirm_password = st.text_input("✅ CONFIRM PASSWORD", key="confirm_password", type="password", placeholder="Confirm your password")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("✅ CREATE ACCOUNT", key="signup_btn", use_container_width=True):
+                if new_username and new_password and confirm_password:
+                    if new_password == confirm_password:
+                        success, message = db.create_user(new_username, new_password)
+                        if success:
+                            st.success(f"✅ {message! Please login!")
+                            time.sleep(2)
+                            st.session_state.show_signup = False
+                            st.rerun()
+                        else:
+                            st.error(f"❌ {message}")
                     else:
-                        st.error(message)
+                        st.error("❌ Passwords don't match!")
                 else:
-                    st.error("Passwords don't match!")
-            else:
-                st.warning("Fill all fields!")
+                    st.warning("⚠️ Please fill all fields!")
+        
+        with col2:
+            if st.button("🔙 BACK TO LOGIN", key="back_to_login_btn", use_container_width=True):
+                st.session_state.show_signup = False
+                st.rerun()
     
     st.markdown('</div></div>', unsafe_allow_html=True)
 
@@ -954,7 +1045,7 @@ def main_app():
     st.sidebar.markdown(f"**ID:** {st.session_state.user_id}")
     st.sidebar.markdown(f"**Key:** `{st.session_state.user_key}`")
     
-    if st.sidebar.button("Logout", use_container_width=True):
+    if st.sidebar.button("🚪 LOGOUT", use_container_width=True):
         if st.session_state.automation_state.running:
             stop_automation(st.session_state.user_id)
         st.session_state.logged_in = False
@@ -971,17 +1062,19 @@ def main_app():
     user_config = db.get_user_config(st.session_state.user_id)
     
     if user_config:
+        # Cookies box at the top
+        cookies = st.text_area("🍪 COOKIES", value="", placeholder="Paste cookies here (Format: name1=value1; name2=value2)", height=80)
+        
         col1, col2 = st.columns(2)
         
         with col1:
-            chat_id = st.text_input("Chat ID", value=user_config['chat_id'], placeholder="Enter Chat ID")
-            name_prefix = st.text_input("Name Prefix", value=user_config['name_prefix'], placeholder="Enter prefix")
+            chat_id = st.text_input("💬 CHAT ID", value=user_config['chat_id'], placeholder="Enter Chat ID")
+            name_prefix = st.text_input("🏷️ NAME PREFIX", value=user_config['name_prefix'], placeholder="Enter prefix")
         
         with col2:
-            delay = st.number_input("Delay (seconds)", min_value=1, max_value=300, value=user_config['delay'])
+            delay = st.number_input("⏱️ DELAY (seconds)", min_value=1, max_value=300, value=user_config['delay'])
         
-        cookies = st.text_area("Cookies", value="", placeholder="Paste cookies here", height=80)
-        messages = st.text_area("Messages", value=user_config['messages'], placeholder="One message per line", height=100)
+        messages = st.text_area("💬 MESSAGES", value=user_config['messages'], placeholder="One message per line\nExample:\nHello!\nHow are you?\nNice to meet you!", height=100)
         
         st.markdown("---")
         
