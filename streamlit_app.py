@@ -38,92 +38,61 @@ custom_css = """
         background-attachment: fixed;
     }
     
-    /* CRITICAL: Remove ALL top header spaces */
-    .main .block-container {
-        padding: 0px !important;
-        padding-top: 0px !important;
-        padding-bottom: 0px !important;
-        max-width: 100% !important;
-    }
-    
-    /* Remove header completely */
-    header {
-        display: none !important;
-    }
-    
-    .stApp > header {
-        display: none !important;
-        height: 0px !important;
-        min-height: 0px !important;
-    }
-    
-    /* Remove top margin from main content */
-    section.main > div {
-        padding-top: 0rem !important;
-        margin-top: 0rem !important;
-    }
-    
-    /* Remove any top spacing from the app container */
-    .stApp > div:first-child {
-        margin-top: -10px !important;
-        padding-top: 0px !important;
-    }
-    
-    /* Ensure the wrapper starts from top */
-    .stApp > div {
-        margin-top: 0px !important;
-        padding-top: 0px !important;
-    }
-    
     /* Hide all Streamlit default elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    header {visibility: hidden;}
     .stDeployButton {display: none;}
     [data-testid="stToolbar"] {display: none;}
     .stAlert {display: none !important;}
     .element-container div[data-testid="stAlert"] {display: none !important;}
+    
+    /* Remove all default padding and margins */
+    .main .block-container {
+        padding: 10px !important;
+        padding-top: 5px !important;
+        padding-bottom: 10px !important;
+        max-width: 100% !important;
+    }
     
     /* Main wrapper */
     .main-wrapper {
         width: 100%;
         padding: 0;
         min-height: auto;
-        margin-top: 0;
     }
     
-    /* Single Container - Reduced top padding */
+    /* Single Container */
     .big-container {
         max-width: 100%;
         width: 100%;
         background: linear-gradient(135deg, #1e3c72, #2a5298);
         border-radius: 25px;
-        padding: 15px 15px 20px 15px;
+        padding: 20px 15px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         border: 1px solid rgba(255,255,255,0.2);
         margin: 0;
-        margin-top: 0;
     }
     
-    /* Hero Title - Slightly smaller and tighter */
+    /* Hero Title - Medium size */
     .hero-title {
         text-align: center;
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 800;
         background: linear-gradient(135deg, #ff6b6b, #ffd93d, #ff6b6b);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 3px;
-        margin-top: 0;
+        margin-bottom: 5px;
         letter-spacing: 1px;
         word-wrap: break-word;
     }
     
-    /* Hero Subtitle - Tighter */
+    /* Hero Subtitle */
     .hero-subtitle {
         text-align: center;
-        font-size: 11px;
+        font-size: 12px;
         color: #ffd93d;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         font-weight: 600;
         letter-spacing: 2px;
     }
@@ -136,8 +105,8 @@ custom_css = """
         border: 2px solid #ff6b6b !important;
         border-radius: 15px !important;
         color: #333 !important;
-        padding: 8px 12px !important;
-        font-size: 13px !important;
+        padding: 10px 15px !important;
+        font-size: 14px !important;
         font-weight: 500 !important;
         transition: all 0.3s ease !important;
     }
@@ -150,7 +119,7 @@ custom_css = """
     }
     
     .stTextArea>div>div>textarea {
-        min-height: 70px;
+        min-height: 80px;
         border-radius: 15px !important;
     }
     
@@ -158,8 +127,8 @@ custom_css = """
     label {
         color: #ffd93d !important;
         font-weight: 600 !important;
-        font-size: 11px !important;
-        margin-bottom: 3px !important;
+        font-size: 12px !important;
+        margin-bottom: 5px !important;
         display: block !important;
         letter-spacing: 0.5px;
     }
@@ -170,9 +139,9 @@ custom_css = """
         color: white !important;
         border: none !important;
         border-radius: 15px !important;
-        padding: 8px !important;
+        padding: 10px !important;
         font-weight: 700 !important;
-        font-size: 13px !important;
+        font-size: 14px !important;
         width: 100% !important;
         letter-spacing: 1px !important;
         transition: all 0.3s ease !important;
@@ -188,26 +157,26 @@ custom_css = """
     .msg-box {
         background: rgba(255,255,255,0.95);
         border-radius: 15px;
-        padding: 8px;
-        margin: 8px 0;
+        padding: 10px;
+        margin: 10px 0;
         text-align: center;
         border: 1px solid #ffd93d;
     }
     
     .msg-text {
         color: #ff6b6b;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
     }
     
     /* Status Box - Compact */
     .status-box {
         text-align: center;
-        padding: 8px;
+        padding: 10px;
         border-radius: 15px;
-        margin-top: 10px;
+        margin-top: 15px;
         font-weight: 700;
-        font-size: 13px;
+        font-size: 14px;
     }
     
     .running {
@@ -224,7 +193,7 @@ custom_css = """
     
     /* Divider - Compact */
     hr {
-        margin: 10px 0;
+        margin: 15px 0;
         border: none;
         height: 1px;
         background: linear-gradient(90deg, transparent, #ffd93d, transparent);
@@ -266,16 +235,16 @@ custom_css = """
         background-color: rgba(255,255,255,0.1);
         border-radius: 15px;
         padding: 5px;
-        margin-bottom: 12px;
+        margin-bottom: 15px;
     }
     
     .stTabs [data-baseweb="tab"] {
         border-radius: 12px;
-        padding: 6px 10px;
+        padding: 8px 12px;
         background-color: transparent;
         color: white;
         font-weight: 600;
-        font-size: 11px;
+        font-size: 12px;
     }
     
     .stTabs [aria-selected="true"] {
@@ -289,9 +258,9 @@ custom_css = """
         border-radius: 15px !important;
         border-left: 3px solid #ff6b6b !important;
         color: #333 !important;
-        padding: 6px !important;
-        font-size: 11px !important;
-        margin: 3px 0 !important;
+        padding: 8px !important;
+        font-size: 12px !important;
+        margin: 5px 0 !important;
     }
     
     /* Number input */
@@ -315,17 +284,17 @@ custom_css = """
     
     .row-widget.stHorizontal {
         margin-top: 0 !important;
-        margin-bottom: 6px !important;
+        margin-bottom: 8px !important;
     }
     
     /* Element spacing */
     .element-container {
-        margin-bottom: 6px !important;
+        margin-bottom: 8px !important;
     }
     
     /* Make all boxes rounded and compact */
     .stTextInput, .stTextArea, .stNumberInput {
-        margin-bottom: 6px !important;
+        margin-bottom: 8px !important;
     }
     
     /* Column gap reduction */
