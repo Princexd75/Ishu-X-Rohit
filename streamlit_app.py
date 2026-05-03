@@ -49,8 +49,8 @@ custom_css = """
     
     /* Remove all default padding and margins */
     .main .block-container {
-        padding: 5px !important;
-        padding-top: 5px !important;
+        padding: 0px !important;
+        padding-top: -5px !important;
         padding-bottom: 5px !important;
         max-width: 100% !important;
     }
