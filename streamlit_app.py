@@ -255,7 +255,7 @@ custom_css = """
     
     /* Column gap reduction */
     .row-widget.stHorizontal > div {
-        gap: 0px !important;
+        gap: -5px !important;
     }
     
     /* Remove extra Streamlit spacing */
