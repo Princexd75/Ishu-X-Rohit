@@ -48,12 +48,13 @@ custom_css = """
     .element-container div[data-testid="stAlert"] {display: none !important;}
     
     /* Remove all default padding and margins */
-    .main .block-container {
-        padding: 0px !important;
-        padding-top: -5px !important;
-        padding-bottom: 5px !important;
-        max-width: 100% !important;
-    }
+/* Sahi spelling aur negative margin ke saath */
+.main .block-container {
+    padding: 0px !important;       /* Charo taraf ki padding khatam */
+    padding-top: 0px !important;   /* Upar ki padding zero */
+    margin-top: -80px !important;  /* Yeh content ko upar khinchega */
+    max-width: 100% !important;
+ }
     
     /* Main wrapper */
     .main-wrapper {
